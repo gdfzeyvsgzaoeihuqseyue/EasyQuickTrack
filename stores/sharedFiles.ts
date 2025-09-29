@@ -17,22 +17,22 @@ export const useSharedFiles = defineStore('sharedFiles', () => {
   const paths = {
     // IMAGES
     logo: {
-      dc: `${SHARED_URL}/Logos/EQT-DC.png`,
-      dw: `${SHARED_URL}/Logos/EQT-DW.png`,
-      mc: `${SHARED_URL}/Logos/EQT-MC.png`,
-      mw: `${SHARED_URL}/Logos/EQT-MW.png`,
-      pgs: `${SHARED_URL}/Logos/PGS-MC.png`,
+      dc: `${SHARED_URL}/_General/Logos/EQT-DC.png`,
+      dw: `${SHARED_URL}/_General/Logos/EQT-DW.png`,
+      mc: `${SHARED_URL}/_General/Logos/EQT-MC.png`,
+      mw: `${SHARED_URL}/_General/Logos/EQT-MW.png`,
+      pgs: `${SHARED_URL}/_General/Logos/PGS-MC.png`,
     },
     general: {
-      error403: `${SHARED_URL}/General/Error403.png`,
-      error404: `${SHARED_URL}/General/Error404.png`,
-      error500: `${SHARED_URL}/General/Error500.png`,
+      error403: `${SHARED_URL}/_General/Error/403.png`,
+      error404: `${SHARED_URL}/_General/Error/404.png`,
+      error500: `${SHARED_URL}/_General/Error/500.png`,
     },
 
     //JSON
     data: {
-      footer: `${SHARED_URL}/JSON/pgs.json`,
-      custom: `${SHARED_URL}/JSON/custom.json`
+      footer: `${SHARED_URL}/_Docs/JSON/pgs.json`,
+      custom: `${SHARED_URL}/_Docs/JSON/custom.json`
     }
   };
 

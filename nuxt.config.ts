@@ -57,10 +57,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'author', content: 'Pro Gestion Soft' },
         { name: 'keywords', content: 'url, racourcie, diminuteur, Bénin, PGS, Pro Gestion Soft' },
-        {
-          name: 'google-site-verification',
-          content: 'OdKxHpVkBSxk0mj4vD4OTmZPdVi5pWzyCu4QPIMHy9A'
-        },
+        { name: 'google-site-verification', content: 'OdKxHpVkBSxk0mj4vD4OTmZPdVi5pWzyCu4QPIMHy9A' },
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/favicon.ico' },
