@@ -40,10 +40,8 @@
       <div class="space-y-6">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">URL originale</label>
-          <div class="p-3 bg-gray-50 rounded-lg border">
-            <a :href="link.longUrl" target="_blank" class="text-primary-600 hover:text-primary-700 break-all">
-              {{ link.longUrl }}
-            </a>
+          <div class="p-3 bg-gray-50 rounded-lg border text-gray-900 break-all">
+            {{ link.longUrl }}
           </div>
         </div>
         <div>
@@ -101,6 +99,14 @@
             <span class="text-sm font-medium text-gray-700">Modifié le :</span>
             <span class="text-gray-900 ml-2">{{ formatDate(link.updatedAt) }}</span>
           </div>
+          <div v-if="link.activateAt">
+            <span class="text-sm font-medium text-gray-700">Activé le :</span>
+            <span class="text-gray-900 ml-2">{{ formatDate(link.activateAt) }}</span>
+          </div>
+          <div v-if="link.expiresAt">
+            <span class="text-sm font-medium text-gray-700">Expire le :</span>
+            <span class="text-gray-900 ml-2">{{ formatDate(link.expiresAt) }}</span>
+          </div>
           <div>
             <span class="text-sm font-medium text-gray-700">Code court :</span>
             <span class="text-gray-900 ml-2 font-mono">{{ link.shortCode }}</span>
@@ -151,4 +157,3 @@ const formatDate = (dateString: string | number) => {
   return date.toLocaleDateString('fr-FR');
 };
 </script>
-

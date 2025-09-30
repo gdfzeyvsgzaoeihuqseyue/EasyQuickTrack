@@ -59,6 +59,8 @@ export interface ShortLink {
   createdAt: number
   updatedAt: number
   disabled?: boolean
+  activateAt?: string;
+  expiresAt?: string;
   analytics?: Readonly<ShortLinkAnalytics[]>;
   metadata?: LinkMetadata;
 }

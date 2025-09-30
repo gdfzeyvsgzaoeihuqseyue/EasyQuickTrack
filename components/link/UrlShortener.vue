@@ -39,6 +39,47 @@
         </p>
       </div>
 
+      <!-- Advanced Options Section -->
+      <div class="border-t pt-6">
+        <button type="button" @click="showAdvanced = !showAdvanced"
+          class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 mb-4">
+          <IconChevronRight :class="['w-4 h-4 mr-2 transition-transform', showAdvanced ? 'rotate-90' : '']" />
+          Options avancées
+        </button>
+
+        <div v-show="showAdvanced" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Activer à partir de (optionnel)
+              </label>
+              <input
+                v-model="activateAt"
+                type="datetime-local"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                :disabled="linksStore.loading"
+              />
+              <p class="mt-1 text-xs text-gray-500">Le lien ne sera actif qu'à partir de cette date et heure.</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Désactiver le (optionnel)
+              </label>
+              <input
+                v-model="expiresAt"
+                type="datetime-local"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                :disabled="linksStore.loading"
+              />
+              <p class="mt-1 text-xs text-gray-500">Le lien expirera et ne sera plus redirigé après cette date et heure.</p>
+            </div>
+          </div>
+          <p v-if="linksStore.error && linksStore.error.includes('date')" class="mt-2 text-sm text-red-600">
+            {{ linksStore.error }}
+          </p>
+        </div>
+      </div>
+
       <button
         type="submit"
         :disabled="linksStore.loading || !longUrl"
@@ -87,7 +128,7 @@
 <script setup>
 import { ref, watch } from 'vue'; 
 import { useLinksStore } from '~/stores/links';
-import { IconLoader2 } from '@tabler/icons-vue'
+import { IconLoader2, IconChevronRight } from '@tabler/icons-vue'
 
 const emit = defineEmits(['linkCreated']);
 
@@ -95,9 +136,12 @@ const linksStore = useLinksStore();
 
 const longUrl = ref('');
 const alias = ref(''); 
+const activateAt = ref('');
+const expiresAt = ref('');
 const shortLink = ref(null);
 const copied = ref(false);
 const shortUrlInput = ref(null);
+const showAdvanced = ref(false);
 
 const notificationMessage = ref('');
 const notificationType = ref('success');
@@ -134,7 +178,12 @@ const shortenUrl = async () => {
   linksStore.clearError();
   shortLink.value = null;
 
-  const result = await linksStore.createShortLink(longUrl.value, alias.value.trim() || undefined);
+  const result = await linksStore.createShortLink(
+    longUrl.value, 
+    alias.value.trim() || undefined,
+    activateAt.value || undefined,
+    expiresAt.value || undefined
+  );
 
   if (result) {
     shortLink.value = result;
@@ -142,6 +191,9 @@ const shortenUrl = async () => {
     emit('linkCreated', result); 
     longUrl.value = '';
     alias.value = ''; 
+    activateAt.value = '';
+    expiresAt.value = '';
+    showAdvanced.value = false;
   }
 };
 

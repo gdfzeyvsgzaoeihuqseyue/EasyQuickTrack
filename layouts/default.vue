@@ -6,6 +6,7 @@
       <slot />
     </main>
     <AppFooter />
+    <GlobalFeedbackButton />
   </div>
 </template>
 

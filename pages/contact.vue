@@ -124,7 +124,7 @@
                   <h4 class="font-semibold text-gray-900">Suivez-nous</h4>
                   <!-- Liens sociaux -->
                   <ul role="list" class="flex justify-center sm:justify-start space-x-4">
-                    <SocialLink />
+                    <SocialCustomLink />
                   </ul>
                 </div>
               </div>

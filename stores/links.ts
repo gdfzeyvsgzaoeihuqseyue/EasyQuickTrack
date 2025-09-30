@@ -20,14 +20,14 @@ export const useLinksStore = defineStore('links', () => {
   })
 
   // Actions
-  const createShortLink = async (longUrl: string, alias?: string): Promise<ShortLink | null> => {
+  const createShortLink = async (longUrl: string, alias?: string, activateAt?: string, expiresAt?: string): Promise<ShortLink | null> => {
     loading.value = true
     error.value = ''
 
     try {
       const response = await useApiFetch<CreateLinkResponse>('/eqt/link', {
         method: 'POST',
-        body: { longUrl, alias } 
+        body: { longUrl, alias, activateAt, expiresAt } 
       });
 
       const newLink = response.link
@@ -44,6 +44,8 @@ export const useLinksStore = defineStore('links', () => {
       console.error('Erreur lors de la création du lien:', err)
       if (err.status === 409 && err.data?.message?.includes('alias')) {
         error.value = err.data?.message || 'L\'alias fourni est déjà utilisé.';
+      } else if (err.status === 400 && err.data?.message?.includes('date')) {
+        error.value = err.data?.message || 'Dates d\'activation/expiration invalides.';
       } else {
         error.value = err.data?.message || 'Une erreur est survenue lors de la création du lien';
       }
@@ -125,14 +127,14 @@ export const useLinksStore = defineStore('links', () => {
     }
   }
 
-  const updateLink = async (id: string, longUrl: string): Promise<ShortLink | null> => {
+  const updateLink = async (id: string, longUrl: string, activateAt?: string, expiresAt?: string): Promise<ShortLink | null> => {
     loading.value = true
     error.value = ''
 
     try {
       const response = await useApiFetch<UpdateLinkResponse>(`/eqt/link/${id}`, {
         method: 'PUT',
-        body: { longUrl }
+        body: { longUrl, activateAt, expiresAt }
       });
 
       const updatedLink = response.data
@@ -155,7 +157,9 @@ export const useLinksStore = defineStore('links', () => {
       if (err.status === 404) {
         error.value = 'Lien non trouvé.'
       } else if (err.status === 400 && err.data?.message?.includes('nombre maximum')) {
-        error.value = 'Limite de 10 mises à jour atteinte pour ce lien.'
+        error.value = 'Limite de 10 mises à jour atteinte pour ce lien.';
+      } else if (err.status === 400 && err.data?.message?.includes('date')) {
+        error.value = err.data?.message || 'Dates d\'activation/expiration invalides.';
       } else if (err.status === 400) {
         error.value = err.data?.message || 'Données invalides fournies.'
       } else {

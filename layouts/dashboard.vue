@@ -186,6 +186,8 @@
         </div>
       </main>
     </div>
+
+    <GlobalFeedbackButton />
   </div>
 </template>
 

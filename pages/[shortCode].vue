@@ -105,7 +105,7 @@ let redirectTimeout: NodeJS.Timeout | null = null;
 let countdownInterval: NodeJS.Timeout | null = null;
 
 // Function de date
-const formatDateTime = (timestamp: number) => {
+const formatDateTime = (timestamp: number | string) => {
   const date = new Date(timestamp);
   return date.toLocaleString('fr-FR', {
     year: 'numeric',

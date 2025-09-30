@@ -6,7 +6,7 @@ type FooterData = {
 }
 
 type CustomData = {
-  sl: { url: string }
+  eqt: { url: string }
 }
 
 export const useSharedFiles = defineStore('sharedFiles', () => {
@@ -52,7 +52,7 @@ export const useSharedFiles = defineStore('sharedFiles', () => {
   async function getBaseUrl() {
     try {
       const customData = await $fetch<CustomData>(paths.data.custom);
-      return customData.sl.url;
+      return customData.eqt.url;
     } catch (err) {
       console.error('Erreur lors du chargement des données custom:', err);
       return '#'; 

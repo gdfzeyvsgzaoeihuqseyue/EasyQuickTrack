@@ -12,7 +12,7 @@
 
           <!-- Liens sociaux -->
           <ul role="list" class="flex justify-center sm:justify-start space-x-4">
-            <SocialLink />
+            <SocialCustomLink />
           </ul>
           <p class="text-xs sm:text-sm mt-3 sm:mt-2">
             © {{ new Date().getFullYear() }} EasyQuickTrack. Tous droits réservés.

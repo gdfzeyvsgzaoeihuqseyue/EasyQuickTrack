@@ -5,7 +5,7 @@
     <ul v-else class="flex flex-wrap gap-4 justify-center md:justify-start">
       <li v-for="link in displayedLinks" :key="link.name">
         <a :href="link.href" target="_blank" rel="noopener noreferrer" :title="link.title"
-          class="text-sm leading-6 text-gray-400 hover:text-primary transition-colors transition-colors duration-200"
+          class="text-sm leading-6 text-gray-400 hover:text-primary-600 transition-colors transition-colors duration-200"
           aria-label="Accéder à notre profil social">
           <component :is="link.icon" class="w-6 h-6" aria-hidden="true" />
           <span class="sr-only">{{ link.name }}</span>
