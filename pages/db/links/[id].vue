@@ -325,12 +325,12 @@ const editLink = () => {
   showEditModal.value = true;
 };
 
-const handleUpdateLink = async (newLongUrl: string) => {
+const handleUpdateLink = async (newLongUrl: string, activateAt?: string, expiresAt?: string) => {
   if (!linksStore.currentLink) {
     showFloatingNotification('Aucun lien à mettre à jour.', 'error');
     return;
   }
-  const success = await linksStore.updateLink(linksStore.currentLink.id, newLongUrl);
+  const success = await linksStore.updateLink(linksStore.currentLink.id, newLongUrl, activateAt, expiresAt);
   if (success) {
     showEditModal.value = false;
     await logsStore.fetchLinkLogs(linkId);

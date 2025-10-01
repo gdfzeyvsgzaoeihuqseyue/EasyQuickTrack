@@ -1185,13 +1185,13 @@ const viewAnalytics = (link: ShortLink) => {
   navigateTo(`/db/analytics?linkId=${link.id}`);
 };
 
-const handleUpdateLink = async (newUrl: string) => {
+const handleUpdateLink = async (newUrl: string, activateAt?: string, expiresAt?: string) => {
   if (!linkToEdit.value) {
     showFloatingNotification('Aucun lien à mettre à jour.', 'error');
     return;
   }
 
-  const success = await linksStore.updateLink(linkToEdit.value.id, newUrl);
+  const success = await linksStore.updateLink(linkToEdit.value.id, newUrl, activateAt, expiresAt);
 
   if (success) {
     showEditModal.value = false;

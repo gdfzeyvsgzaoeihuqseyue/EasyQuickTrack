@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useApiFetch } from '~/utils/api';
-import type { ShortLink, CreateLinkResponse, GetLinksResponse, GetLinkResponse, UpdateLinkResponse, DeleteLinkResponse, ShortLinkAnalytics, ExtractMetadataResponse } from '@/types';
+import type { ShortLink, CreateLinkResponse, GetLinksResponse, GetLinkResponse, UpdateLinkResponse, DeleteLinkResponse, ShortLinkAnalytics, ExtractMetadataResponse, LinkStatusError } from '@/types';
 
 export const useLinksStore = defineStore('links', () => {
   const config = useRuntimeConfig()
@@ -9,7 +9,7 @@ export const useLinksStore = defineStore('links', () => {
   const links = ref<ShortLink[]>([])
   const currentLink = ref<ShortLink | null>(null)
   const loading = ref(false)
-  const error = ref<string>('')
+  const error = ref<string | LinkStatusError | null>(null)
   const metadataLoading = ref(false)
   const metadataError = ref<string>('')
   const pagination = ref({
@@ -22,7 +22,7 @@ export const useLinksStore = defineStore('links', () => {
   // Actions
   const createShortLink = async (longUrl: string, alias?: string, activateAt?: string, expiresAt?: string): Promise<ShortLink | null> => {
     loading.value = true
-    error.value = ''
+    error.value = null
 
     try {
       const response = await useApiFetch<CreateLinkResponse>('/eqt/link', {
@@ -57,7 +57,7 @@ export const useLinksStore = defineStore('links', () => {
 
   const fetchLinks = async (page: number = 1, limit: number = 10): Promise<void> => {
     loading.value = true
-    error.value = ''
+    error.value = null
 
     try {
       const response = await useApiFetch<GetLinksResponse>('/eqt/link', {
@@ -81,7 +81,7 @@ export const useLinksStore = defineStore('links', () => {
 
   const fetchLinkById = async (identifier: string): Promise<ShortLink | null> => {
     loading.value = true
-    error.value = ''
+    error.value = null
 
     try {
       const response = await useApiFetch<GetLinkResponse>(`/eqt/link/${identifier}`);
@@ -93,6 +93,13 @@ export const useLinksStore = defineStore('links', () => {
       
       if (err.status === 404) {
         error.value = 'Lien non trouvé'
+      } else if (err.status === 403 && err.data) {
+        error.value = {
+          message: err.data.message || 'Ce lien est inaccessible.',
+          reason: err.data.reason,
+          activateAt: err.data.activateAt,
+          expiresAt: err.data.expiresAt,
+        };
       } else {
         error.value = err.data?.message || 'Une erreur est survenue lors de la récupération du lien'
       }
@@ -129,7 +136,7 @@ export const useLinksStore = defineStore('links', () => {
 
   const updateLink = async (id: string, longUrl: string, activateAt?: string, expiresAt?: string): Promise<ShortLink | null> => {
     loading.value = true
-    error.value = ''
+    error.value = null
 
     try {
       const response = await useApiFetch<UpdateLinkResponse>(`/eqt/link/${id}`, {
@@ -174,7 +181,7 @@ export const useLinksStore = defineStore('links', () => {
 
   const deleteLink = async (id: string): Promise<boolean> => {
     loading.value = true
-    error.value = ''
+    error.value = null
 
     try {
       await useApiFetch<DeleteLinkResponse>(`/eqt/link/${id}`, {
@@ -214,7 +221,7 @@ export const useLinksStore = defineStore('links', () => {
   }
 
   const clearError = (): void => {
-    error.value = ''
+    error.value = null
   }
 
   const clearMetadataError = (): void => {
@@ -228,7 +235,7 @@ export const useLinksStore = defineStore('links', () => {
 
   const toggleLinkStatus = async (id: string, disable: boolean): Promise<ShortLink | null> => {
     loading.value = true
-    error.value = ''
+    error.value = null
 
     try {
       const response = await useApiFetch<{ success: boolean; message: string; data: ShortLink }>(`/eqt/link/${id}/disable`, {
