@@ -238,7 +238,7 @@ export const useLinksStore = defineStore('links', () => {
     error.value = null
 
     try {
-      const response = await useApiFetch<{ success: boolean; message: string; data: ShortLink }>(`/eqt/link/${id}/disable`, {
+      const response = await useApiFetch<{ success: boolean; message: string; data: ShortLink }>(`/eqt/link/${id}/toggle`, {
         method: 'PUT',
         body: { disable }
       });
