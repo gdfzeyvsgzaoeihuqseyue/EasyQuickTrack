@@ -2,7 +2,7 @@
   <div>
     <section class="relative py-20 lg:py-32 overflow-hidden">
       <div class="absolute inset-0">
-        <img src="https://2ad.ir/2ad_theme/img/heading-image.webp" alt="Illustration de l'arrière-plan"
+        <img :src="sharedFiles.paths.general.indexHero" alt="Arrière-plan"
           class="w-full h-full object-cover opacity-20" />
       </div>
 
@@ -147,7 +147,9 @@ import { useAnalyticsStore } from '~/stores/analytics';
 import { IconLink, IconDeviceAnalytics, IconLock } from '@tabler/icons-vue';
 import { UrlShortener } from '@/components/link'
 import { QRCodeGenerator } from '@/components/qrcode'
+import { useSharedFiles } from '~/stores/sharedFiles';
 
+const sharedFiles = useSharedFiles();
 const componentMode = ref('shortener');
 const linksStore = useLinksStore();
 const analyticsStore = useAnalyticsStore();

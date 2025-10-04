@@ -2,7 +2,7 @@
   <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
     <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
-        <!-- Logo -->
+        <!-- Logo avec Badge Beta -->
         <NuxtLink to="/" class="flex items-center gap-2 hover:scale-105 overflow-hidden transition-all duration-300">
           <div class="hidden lg:block">
             <img :src="sharedFiles.paths.logo.dc" alt="Logo" class="h-8 w-auto sm:h-10 dark:hidden" />
@@ -12,6 +12,11 @@
             <img :src="sharedFiles.paths.logo.mc" alt="Logo" class="h-8 w-auto sm:h-10 dark:hidden" />
             <img :src="sharedFiles.paths.logo.mw" alt="Logo" class="h-8 w-auto sm:h-10 hidden dark:block" />
           </div>
+          <!-- Badge Beta -->
+          <span v-if="config.public.betaMode"
+            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-100 text-primary-800 border border-primary-200">
+            BETA
+          </span>
         </NuxtLink>
 
         <!-- Desktop menu -->
@@ -126,12 +131,10 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
-import {
-  IconMenu2, IconUserCircle, IconChevronDown, IconDeviceDesktop,
-  IconLink, IconQrcode, IconChartHistogram, IconLogout
-} from '@tabler/icons-vue'
+import { IconMenu2, IconUserCircle, IconChevronDown, IconDeviceDesktop, IconLink, IconQrcode, IconChartHistogram, IconLogout } from '@tabler/icons-vue'
 import { useSharedFiles } from '~/stores/sharedFiles';
 
+const config = useRuntimeConfig();
 const sharedFiles = useSharedFiles();
 const authStore = useAuthStore();
 const router = useRouter();
@@ -139,8 +142,8 @@ const router = useRouter();
 const mobileMenuOpen = ref(false);
 const profileMenuOpen = ref(false);
 
-const profileMenu = ref(null); 
-const mobileMenu = ref(null); 
+const profileMenu = ref(null);
+const mobileMenu = ref(null);
 
 const computedNavItems = computed(() => {
   if (authStore.isLoggedIn) {
@@ -163,7 +166,7 @@ const computedNavItems = computed(() => {
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value;
   if (mobileMenuOpen.value) {
-    profileMenuOpen.value = false; 
+    profileMenuOpen.value = false;
   }
 };
 

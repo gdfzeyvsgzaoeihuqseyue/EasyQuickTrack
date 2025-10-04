@@ -189,14 +189,10 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useLinksStore } from '~/stores/links';
 
-// Récupérer le code court à partir des paramètres de l'URL
+// Variables
 const route = useRoute();
 const shortCode = route.params.shortCode as string;
-
-// Initialiser le store des liens
 const linksStore = useLinksStore();
-
-// États du composant
 const countdownSeconds = ref(10);
 const redirectionCancelled = ref(false);
 
@@ -294,23 +290,36 @@ onMounted(async () => {
   try {
     await linksStore.fetchLinkById(shortCode);
 
-    // Vérifier si pas d'erreur ET si le lien est actif
-    if (!linksStore.error && linkStatus.value.isActive) {
-      countdownInterval = setInterval(() => {
-        if (redirectionCancelled.value) {
-          clearInterval(countdownInterval!);
-          return;
-        }
-        countdownSeconds.value--;
-        if (countdownSeconds.value <= 0) {
-          clearInterval(countdownInterval!);
-          performRedirect();
-        }
-      }, 1000);
+    // Tags dynamiquement avec les metadata du lien
+    if (linksStore.currentLink && linksStore.currentLink.metadata) {
+      const metadata = linksStore.currentLink.metadata;
 
-      redirectTimeout = setTimeout(() => {
-        performRedirect();
-      }, 10000);
+      // Validation des types pour ogType
+      const validOgTypes = ['website', 'article', 'book', 'profile', 'music.song', 'music.album', 'music.playlist', 'music.radio_status', 'video.movie', 'video.episode', 'video.tv_show', 'video.other'] as const;
+      const ogType = metadata.ogType && validOgTypes.includes(metadata.ogType as any)
+        ? metadata.ogType as typeof validOgTypes[number]
+        : 'website';
+
+      // Validation des types pour twitterCard
+      const validTwitterCards = ['summary', 'summary_large_image', 'app', 'player'] as const;
+      const twitterCard = metadata.twitterCard && validTwitterCards.includes(metadata.twitterCard as any)
+        ? metadata.twitterCard as typeof validTwitterCards[number]
+        : 'summary_large_image';
+
+      useSeoMeta({
+        title: metadata.title || `Redirection de ${shortCode}`,
+        description: metadata.description || 'Redirection vers le lien original...',
+        ogTitle: metadata.title || `Redirection de ${shortCode}`,
+        ogDescription: metadata.description || 'Redirection vers le lien original...',
+        ogImage: metadata.image || undefined,
+        ogUrl: linksStore.currentLink.longUrl,
+        ogType: ogType,
+        twitterCard: twitterCard,
+        twitterTitle: metadata.title || `Redirection de ${shortCode}`,
+        twitterDescription: metadata.description || 'Redirection vers le lien original...',
+        twitterImage: metadata.image || undefined,
+        robots: 'noindex, follow'
+      });
     }
 
   } catch (err: any) {
@@ -327,10 +336,10 @@ onUnmounted(() => {
   linksStore.clearError();
 });
 
-// SEO
+// SEO par defaut
 useSeoMeta({
   title: `Redirection de ${shortCode}`,
   description: 'Redirection vers le lien original...',
-  robots: 'noindex, nofollow'
+  robots: 'noindex, follow'
 });
 </script>

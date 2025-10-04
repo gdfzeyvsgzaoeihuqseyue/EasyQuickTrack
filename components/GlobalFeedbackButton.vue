@@ -31,7 +31,7 @@
             <span>Conditions Générales d'Utilisation</span>
           </NuxtLink>
           <a href="https://pgsdocs.netlify.app" target="_blank" @click="showModal = false"
-            class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-ashAct transition-colors">
+            class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
             <IconBook class="h-6 w-6 text-primary-600 mr-3" />
             <span>Documentation</span>
           </a>

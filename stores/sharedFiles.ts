@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 
-type FooterData = { 
-  brand: string; 
-  brandUrl: string 
+type FooterData = {
+  brand: string;
+  brandUrl: string
 }
 
 type CustomData = {
@@ -11,28 +11,33 @@ type CustomData = {
 
 export const useSharedFiles = defineStore('sharedFiles', () => {
   const runtimeConfig = useRuntimeConfig();
+
   const SHARED_URL = runtimeConfig.public.pgsSharedFiles;
+  const GNR_IMG = `${SHARED_URL}/_General/Images`;
+  const GNR_DOC = `${SHARED_URL}/_General/Docs`;
+  const APP_IMG = `${SHARED_URL}/EQT`;
 
   // Chemins des fichiers
   const paths = {
     // IMAGES
     logo: {
-      dc: `${SHARED_URL}/_General/Logos/EQT-DC.png`,
-      dw: `${SHARED_URL}/_General/Logos/EQT-DW.png`,
-      mc: `${SHARED_URL}/_General/Logos/EQT-MC.png`,
-      mw: `${SHARED_URL}/_General/Logos/EQT-MW.png`,
-      pgs: `${SHARED_URL}/_General/Logos/PGS-MC.png`,
+      dc: `${GNR_IMG}/Logos/EQT-DC.png`,
+      dw: `${GNR_IMG}/Logos/EQT-DW.png`,
+      mc: `${GNR_IMG}/Logos/EQT-MC.png`,
+      mw: `${GNR_IMG}/Logos/EQT-MW.png`,
+      pgs: `${GNR_IMG}/Logos/PGS-MC.png`,
     },
     general: {
-      error403: `${SHARED_URL}/_General/Error/403.png`,
-      error404: `${SHARED_URL}/_General/Error/404.png`,
-      error500: `${SHARED_URL}/_General/Error/500.png`,
+      error403: `${GNR_IMG}/Error/403.png`,
+      error404: `${GNR_IMG}/Error/404.png`,
+      error500: `${GNR_IMG}/Error/500.png`,
+      indexHero: `${APP_IMG}/indexHero.png`
     },
 
     //JSON
     data: {
-      footer: `${SHARED_URL}/_Docs/JSON/pgs.json`,
-      custom: `${SHARED_URL}/_Docs/JSON/custom.json`
+      footer: `${GNR_DOC}/JSON/pgs.json`,
+      custom: `${GNR_DOC}/JSON/custom.json`
     }
   };
 
@@ -55,7 +60,7 @@ export const useSharedFiles = defineStore('sharedFiles', () => {
       return customData.eqt.url;
     } catch (err) {
       console.error('Erreur lors du chargement des données custom:', err);
-      return '#'; 
+      return '#';
     }
   }
 

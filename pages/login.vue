@@ -2,9 +2,15 @@
   <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8 p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
       <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Connectez-vous à votre compte
-        </h2>
+        <div class="flex flex-col items-center justify-center gap-2">
+          <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Connectez-vous à votre compte
+          </h2>
+          <!-- Badge Demo -->
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border-2 border-green-300 shadow-sm">
+            DEMO
+          </span>
+        </div>
         <p class="mt-2 text-center text-sm text-gray-600">
           Accédez au tableau de bord EasyQuickTrack
         </p>
