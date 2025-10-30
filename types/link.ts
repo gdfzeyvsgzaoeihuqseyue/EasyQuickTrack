@@ -22,3 +22,35 @@ export interface LinkStatusError {
   activateAt?: string;
   expiresAt?: string;
 }
+
+export interface ShortLinkResponse {
+  success: boolean
+  message: string
+  link: {
+    id: string
+    longUrl: string
+    shortCode: string
+    shortLink: string
+    clicks: number
+    createdAt: number
+    updatedAt: number
+    disabled?: boolean
+    activateAt?: string
+    expiresAt?: string
+    metadata?: {
+      url: string
+      title?: string
+      description?: string
+      image?: string
+      favicon?: string
+      keywords?: string
+      language?: string
+      author?: string
+      source?: string
+      siteName?: string
+      ogType?: string
+      twitterCard?: string
+      lastUpdated?: number
+    }
+  }
+}

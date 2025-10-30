@@ -9,9 +9,11 @@ declare module '#app' {
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
-
-  const baseAPI = config.public.pgsBaseAPI as string;
-  const socketUrl = baseAPI.replace(/\/api\/v1\/?$/, '');
+  // const baseAPI = config.public.pgsBaseAPI as string;
+  // const socketUrl = baseAPI.replace(/\/api\/v1\/?$/, '');
+  const baseAPI = config.public.pgsBaseAPI || ''
+  const socketUrl = baseAPI ? baseAPI.replace(/\/api\/v1\/?$/, '') : ''
+  if (!socketUrl) console.warn('⚠️ Socket URL non défini. Vérifie ton .env')
   const socket = io(socketUrl, {
     transports: ['websocket'],
     autoConnect: true,

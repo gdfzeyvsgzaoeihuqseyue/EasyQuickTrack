@@ -37,7 +37,8 @@
                 <button @click="toggleProfileMenu"
                   class="btn-primary flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                   <IconUserCircle class="w-5 h-5 mr-2" />
-                  Mon profil
+                  <span v-if="authStore.user">Bonjour, {{ authStore.user.firstName }}</span>
+                  <span v-else>Mon profil</span>
                   <IconChevronDown class="w-4 h-4 ml-2 transition-transform"
                     :class="{ 'rotate-180': profileMenuOpen }" />
                 </button>
@@ -94,7 +95,8 @@
             <button @click="toggleProfileMenu"
               class="block w-full text-left px-3 py-2 text-primary-600 font-medium flex items-center">
               <IconUserCircle class="w-5 h-5 mr-2" />
-              Mon profil
+              <span v-if="authStore.user">Bonjour, {{ authStore.user.firstName }}</span>
+              <span v-else>Mon profil</span>
               <IconChevronDown class="w-4 h-4 ml-2 transition-transform" :class="{ 'rotate-180': profileMenuOpen }" />
             </button>
             <div v-if="profileMenuOpen" class="pl-6 pr-3 py-1 space-y-1">
@@ -151,14 +153,14 @@ const computedNavItems = computed(() => {
       { label: 'Tarifs', to: '/pricing' },
       { label: 'À propos', to: '/about' },
       { label: 'Contact', to: '/contact' },
-      { label: 'Mon profil', to: '#', isDropdown: true }
+      { label: authStore.user ? `Bonjour, ${authStore.user.firstName}` : 'Mon profil', to: '#', isDropdown: true }
     ];
   } else {
     return [
       { label: 'Tarifs', to: '/pricing' },
       { label: 'À propos', to: '/about' },
       { label: 'Contact', to: '/contact' },
-      { label: 'Se connecter', to: '/login', isButton: true }
+      { label: 'Se connecter', to: '/auth/login', isButton: true }
     ];
   }
 });
@@ -189,16 +191,23 @@ const closeMobileMenuAndProfileMenu = () => {
 
 const handleLogoutAndCloseMenu = async () => {
   await authStore.logout();
-  router.push('/login');
+  router.push('/auth/login');
   closeMobileMenuAndProfileMenu();
 };
 
 const handleClickOutside = (event) => {
-  if (profileMenu.value && !profileMenu.value.contains(event.target) && !event.target.closest('.btn-primary')) {
-    profileMenuOpen.value = false;
+  // Vérifier que l'élément DOM existe avant d'utiliser contains
+  if (profileMenu.value) {
+    const element = profileMenu.value.$el || profileMenu.value;
+    if (element && typeof element.contains === 'function' && !element.contains(event.target) && !event.target.closest('.btn-primary')) {
+      profileMenuOpen.value = false;
+    }
   }
-  if (mobileMenu.value && !mobileMenu.value.contains(event.target) && !event.target.closest('.md\\:hidden > button')) {
-    mobileMenuOpen.value = false;
+  if (mobileMenu.value) {
+    const element = mobileMenu.value.$el || mobileMenu.value;
+    if (element && typeof element.contains === 'function' && !element.contains(event.target) && !event.target.closest('.md\\:hidden > button')) {
+      mobileMenuOpen.value = false;
+    }
   }
 };
 

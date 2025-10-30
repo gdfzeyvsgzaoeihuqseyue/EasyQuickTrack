@@ -1,4 +1,5 @@
 export * from './analytics'
+export * from './auth'
 export * from './link'
 export * from './log'
 export * from './metadata'

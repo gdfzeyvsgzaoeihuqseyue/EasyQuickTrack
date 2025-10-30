@@ -1,62 +1,177 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import type { User, Service, LoginResponse, RegisterResponse, RegisterInput, LoginInput } from '@/types';
 
 export const useAuthStore = defineStore('auth', () => {
-  const isLoggedIn = ref(false);
+  // État
+  const user = ref<User | null>(null);
+  const accessToken = ref<string | null>(null);
+  const refreshToken = ref<string | null>(null);
+  const services = ref<Service[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  // Initialiser l'état de connexion depuis le localStorage
-  if (process.client) { 
-    const storedLoginStatus = localStorage.getItem('isLoggedIn');
-    if (storedLoginStatus === 'true') {
-      isLoggedIn.value = true;
-    }
-  }
+  // Computed
+  const isLoggedIn = computed(() => !!user.value && !!accessToken.value);
 
-  const login = async (usernameInput: string, passwordInput: string) => {
+  // Actions
+  const login = async (credentials: LoginInput) => {
     loading.value = true;
     error.value = null;
 
-    // Simuler un appel API
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const config = useRuntimeConfig();
+      const apiUrl = config.public.pgsUserAPI;
 
-    // Logique de connexion en mode démo
-    if (usernameInput === 'demo-accunt@eqt.com' && passwordInput === '_Th!sIsJustD€m0P@55w0rd-') {
-      isLoggedIn.value = true;
+      const response = await $fetch<LoginResponse>(`${apiUrl}/api/auth/login`, {
+        method: 'POST',
+        body: credentials,
+      });
+
+      // Stocker les données d'authentification
+      user.value = response.user;
+      accessToken.value = response.accessToken;
+      refreshToken.value = response.refreshToken;
+      services.value = response.services;
+
+      // Persister dans le localStorage
       if (process.client) {
-        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('accessToken', response.accessToken);
+        localStorage.setItem('refreshToken', response.refreshToken);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        localStorage.setItem('services', JSON.stringify(response.services));
       }
-    } else {
-      isLoggedIn.value = false;
-      error.value = 'Identifiant ou mot de passe incorrect.';
-      if (process.client) {
-        localStorage.setItem('isLoggedIn', 'false');
-      }
+
+      return response;
+    } catch (err: any) {
+      error.value = err.data?.message || 'Erreur de connexion';
+      throw err;
+    } finally {
+      loading.value = false;
     }
-    loading.value = false;
+  };
+
+  const register = async (data: RegisterInput) => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const config = useRuntimeConfig();
+      const apiUrl = config.public.pgsUserAPI;
+
+      const response = await $fetch<RegisterResponse>(`${apiUrl}/api/auth/register`, {
+        method: 'POST',
+        body: data,
+      });
+
+      return response;
+    } catch (err: any) {
+      error.value = err.data?.message || 'Erreur d\'inscription';
+      throw err;
+    } finally {
+      loading.value = false;
+    }
   };
 
   const logout = async () => {
     loading.value = true;
     error.value = null;
 
-    // Simuler un appel API de déconnexion
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      const config = useRuntimeConfig();
+      const apiUrl = config.public.pgsUserAPI;
 
-    isLoggedIn.value = false;
-    if (process.client) {
-      localStorage.removeItem('isLoggedIn');
+      if (accessToken.value) {
+        await $fetch(`${apiUrl}/api/auth/logout`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken.value}`,
+          },
+          body: {
+            token: accessToken.value,
+          },
+        });
+      }
+    } catch (err) {
+      console.error('Erreur lors de la déconnexion:', err);
+    } finally {
+      // Réinitialiser l'état
+      user.value = null;
+      accessToken.value = null;
+      refreshToken.value = null;
+      services.value = [];
+
+      // Nettoyer le localStorage
+      if (process.client) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        localStorage.removeItem('services');
+      }
+
+      loading.value = false;
     }
-    loading.value = false;
+  };
+
+  const refreshAccessToken = async () => {
+    if (!refreshToken.value) {
+      throw new Error('No refresh token available');
+    }
+
+    try {
+      const config = useRuntimeConfig();
+      const apiUrl = config.public.pgsUserAPI;
+
+      const response = await $fetch<{ accessToken: string; expiresIn: number }>(`${apiUrl}/api/auth/refresh-token`, {
+        method: 'POST',
+        body: {
+          refreshToken: refreshToken.value,
+        },
+      });
+
+      accessToken.value = response.accessToken;
+
+      if (process.client) {
+        localStorage.setItem('accessToken', response.accessToken);
+      }
+
+      return response.accessToken;
+    } catch (err) {
+      // Si le refresh échoue, déconnecter l'utilisateur
+      await logout();
+      throw err;
+    }
+  };
+
+  const initAuth = () => {
+    if (process.client) {
+      const storedToken = localStorage.getItem('accessToken');
+      const storedRefreshToken = localStorage.getItem('refreshToken');
+      const storedUser = localStorage.getItem('user');
+      const storedServices = localStorage.getItem('services');
+
+      if (storedToken && storedUser) {
+        accessToken.value = storedToken;
+        refreshToken.value = storedRefreshToken;
+        user.value = JSON.parse(storedUser);
+        services.value = storedServices ? JSON.parse(storedServices) : [];
+      }
+    }
   };
 
   return {
-    isLoggedIn: computed(() => isLoggedIn.value),
+    // État
+    user: computed(() => user.value),
+    accessToken: computed(() => accessToken.value),
+    services: computed(() => services.value),
+    isLoggedIn,
     loading: computed(() => loading.value),
     error: computed(() => error.value),
+    // Actions
     login,
+    register,
     logout,
+    refreshAccessToken,
+    initAuth,
   };
 });
-

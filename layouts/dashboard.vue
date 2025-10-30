@@ -10,6 +10,7 @@
       sidebarCollapsed && !isMobile ? 'lg:w-16' : 'lg:w-64'
     ]">
       <div class="flex flex-col h-full">
+        <!-- Header -->
         <div class="flex-shrink-0 flex items-center justify-between h-16 px-4 border-b border-gray-200">
           <div v-if="!sidebarCollapsed || isMobile" class="flex items-center">
             <NuxtLink to="/"
@@ -25,10 +26,12 @@
             </NuxtLink>
           </div>
           <div v-else class="flex justify-center w-full">
-            <div class="flex-shrink-0">
-              <img :src="sharedFiles.paths.logo.mc" alt="Logo" class="h-8 w-auto sm:h-10 dark:hidden" />
-              <img :src="sharedFiles.paths.logo.mw" alt="Logo" class="h-8 w-auto sm:h-10 hidden dark:block" />
-            </div>
+            <NuxtLink to="/">
+              <div class="flex-shrink-0">
+                <img :src="sharedFiles.paths.logo.mc" alt="Logo" class="h-8 w-auto sm:h-10 dark:hidden" />
+                <img :src="sharedFiles.paths.logo.mw" alt="Logo" class="h-8 w-auto sm:h-10 hidden dark:block" />
+              </div>
+            </NuxtLink>
           </div>
 
           <button v-if="isMobile" @click="sidebarOpen = false"
@@ -37,7 +40,8 @@
           </button>
         </div>
 
-        <nav class="flex-1 px-4 py-6 space-y-2">
+        <!-- Navigation principale - cachée quand replié -->
+        <nav v-if="!sidebarCollapsed || isMobile" class="flex-1 px-4 py-6 space-y-2">
           <NuxtLink to="/db" :class="[
             'flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors',
             $route.path === '/db'
@@ -45,7 +49,7 @@
               : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
           ]">
             <IconDeviceDesktop class="w-5 h-5 mr-3 flex-shrink-0" />
-            <span v-if="!sidebarCollapsed || isMobile">Dashboard</span>
+            <span>Dashboard</span>
           </NuxtLink>
 
           <NuxtLink to="/db/links" :class="[
@@ -55,7 +59,7 @@
               : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
           ]">
             <IconLink class="w-5 h-5 mr-3 flex-shrink-0" />
-            <span v-if="!sidebarCollapsed || isMobile">Mes liens</span>
+            <span>Mes liens</span>
           </NuxtLink>
 
           <NuxtLink to="/db/qrcode" :class="[
@@ -65,7 +69,7 @@
               : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
           ]">
             <IconQrcode class="w-5 h-5 mr-3 flex-shrink-0" />
-            <span v-if="!sidebarCollapsed || isMobile">QR Code</span>
+            <span>QR Code</span>
           </NuxtLink>
 
           <NuxtLink to="/db/sitemap" :class="[
@@ -75,7 +79,7 @@
               : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
           ]">
             <IconSitemap class="w-5 h-5 mr-3 flex-shrink-0" />
-            <span v-if="!sidebarCollapsed || isMobile">Sitemap</span>
+            <span>Sitemap</span>
           </NuxtLink>
 
           <NuxtLink to="/db/robotstxt" :class="[
@@ -85,7 +89,7 @@
               : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
           ]">
             <IconRobot class="w-5 h-5 mr-3 flex-shrink-0" />
-            <span v-if="!sidebarCollapsed || isMobile">Robots.txt</span>
+            <span>Robots.txt</span>
           </NuxtLink>
 
           <NuxtLink to="/db/analytics" :class="[
@@ -95,7 +99,7 @@
               : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
           ]">
             <IconChartHistogram class="w-5 h-5 mr-3 flex-shrink-0" />
-            <span v-if="!sidebarCollapsed || isMobile">Analytics</span>
+            <span>Analytics</span>
           </NuxtLink>
 
           <NuxtLink to="/db/more" :class="[
@@ -105,27 +109,96 @@
               : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
           ]">
             <IconFilterStar class="w-5 h-5 mr-3 flex-shrink-0" />
-            <span v-if="!sidebarCollapsed || isMobile">Analyse avancés</span>
+            <span>Analyse avancés</span>
+          </NuxtLink>
+        </nav>
+
+        <!-- Navigation réduite - seulement icônes quand replié -->
+        <nav v-else class="flex-1 px-2 py-6 space-y-2">
+          <NuxtLink to="/db" :class="[
+            'flex items-center justify-center p-2 text-sm font-medium rounded-lg transition-colors',
+            $route.path === '/db'
+              ? 'bg-primary-100 text-primary-700'
+              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+          ]" :title="'Dashboard'">
+            <IconDeviceDesktop class="w-5 h-5 flex-shrink-0" />
           </NuxtLink>
 
-          <div class="border-t border-gray-200 my-4"></div>
+          <NuxtLink to="/db/links" :class="[
+            'flex items-center justify-center p-2 text-sm font-medium rounded-lg transition-colors',
+            $route.path.startsWith('/db/links')
+              ? 'bg-primary-100 text-primary-700'
+              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+          ]" :title="'Mes liens'">
+            <IconLink class="w-5 h-5 flex-shrink-0" />
+          </NuxtLink>
 
-          <!-- Menu de profil déroulant -->
+          <NuxtLink to="/db/qrcode" :class="[
+            'flex items-center justify-center p-2 text-sm font-medium rounded-lg transition-colors',
+            $route.path.startsWith('/db/qrcode')
+              ? 'bg-primary-100 text-primary-700'
+              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+          ]" :title="'QR Code'">
+            <IconQrcode class="w-5 h-5 flex-shrink-0" />
+          </NuxtLink>
+
+          <NuxtLink to="/db/sitemap" :class="[
+            'flex items-center justify-center p-2 text-sm font-medium rounded-lg transition-colors',
+            $route.path === '/db/sitemap'
+              ? 'bg-primary-100 text-primary-700'
+              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+          ]" :title="'Sitemap'">
+            <IconSitemap class="w-5 h-5 flex-shrink-0" />
+          </NuxtLink>
+
+          <NuxtLink to="/db/robotstxt" :class="[
+            'flex items-center justify-center p-2 text-sm font-medium rounded-lg transition-colors',
+            $route.path === '/db/robotstxt'
+              ? 'bg-primary-100 text-primary-700'
+              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+          ]" :title="'Robots.txt'">
+            <IconRobot class="w-5 h-5 flex-shrink-0" />
+          </NuxtLink>
+
+          <NuxtLink to="/db/analytics" :class="[
+            'flex items-center justify-center p-2 text-sm font-medium rounded-lg transition-colors',
+            $route.path === '/db/analytics'
+              ? 'bg-primary-100 text-primary-700'
+              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+          ]" :title="'Analytics'">
+            <IconChartHistogram class="w-5 h-5 flex-shrink-0" />
+          </NuxtLink>
+
+          <NuxtLink to="/db/more" :class="[
+            'flex items-center justify-center p-2 text-sm font-medium rounded-lg transition-colors',
+            $route.path === '/db/more'
+              ? 'bg-primary-100 text-primary-700'
+              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+          ]" :title="'Analyse avancés'">
+            <IconFilterStar class="w-5 h-5 flex-shrink-0" />
+          </NuxtLink>
+        </nav>
+
+        <div class="border-t border-gray-200 my-4"></div>
+
+        <!-- Section profil - version étendue -->
+        <div v-if="!sidebarCollapsed || isMobile" class="px-4 pb-4">
           <div class="relative">
             <button @click="toggleProfileMenu" :class="[
               'flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors w-full text-left',
               profileMenuExpanded ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
             ]">
               <IconUserCircle class="w-5 h-5 mr-3 flex-shrink-0" />
-              <span v-if="!sidebarCollapsed || isMobile">Mon profil</span>
-              <IconChevronDown v-if="!sidebarCollapsed || isMobile"
+              <span>
+                <span v-if="authStore.user">{{ authStore.user.firstName }}</span>
+                <span v-else>Mon profil</span>
+              </span>
+              <IconChevronDown
                 :class="['w-4 h-4 ml-auto transition-transform', profileMenuExpanded ? 'rotate-180' : '']" />
             </button>
-            <div v-if="profileMenuExpanded" :class="[
-              'absolute bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 focus:outline-none z-50',
-              // Positionnement pour la barre latérale réduite (desktop)
-              sidebarCollapsed && !isMobile ? 'left-full top-0 ml-2 w-48' : 'pl-6 mt-1 w-full'
-            ]">
+
+            <div v-if="profileMenuExpanded"
+              class="mt-1 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
               <NuxtLink to="/db/settings" @click="closeSidebarAndProfileMenu"
                 class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                 <IconSettings class="w-5 h-5 mr-3 flex-shrink-0" />
@@ -138,8 +211,50 @@
               </button>
             </div>
           </div>
-        </nav>
+        </div>
 
+        <!-- Section profil - version réduite-->
+        <div v-else class="px-2 pb-4 space-y-1">
+          <!-- Avatar ou initiales de l'utilisateur -->
+          <div class="flex justify-center mb-2">
+            <div
+              class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-semibold text-sm"
+              :title="authStore.user ? `${authStore.user.firstName} ${authStore.user.lastName}` : 'Mon profil'">
+              <span v-if="authStore.user">
+                {{ authStore.user.firstName.charAt(0) }}{{ authStore.user.lastName.charAt(0) }}
+              </span>
+              <IconUserCircle v-else class="w-5 h-5" />
+            </div>
+          </div>
+
+          <NuxtLink to="/db/settings"
+            class="flex items-center justify-center p-2 text-sm font-medium rounded-lg transition-colors text-gray-700 hover:bg-gray-100 hover:text-gray-900 group relative"
+            :title="'Paramètres'">
+            <IconSettings class="w-5 h-5 flex-shrink-0" />
+            <div
+              class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+              Paramètres
+              <div
+                class="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-gray-900">
+              </div>
+            </div>
+          </NuxtLink>
+
+          <button @click="handleLogout"
+            class="flex items-center justify-center p-2 text-sm font-medium rounded-lg transition-colors text-red-600 hover:bg-red-50 w-full group relative"
+            :title="'Déconnexion'">
+            <IconLogout class="w-5 h-5 flex-shrink-0" />
+            <div
+              class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+              Déconnexion
+              <div
+                class="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-gray-900">
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <!-- Footer du sidebar -->
         <div class="border-t border-gray-200 p-4 mt-auto">
           <button v-if="!isMobile" @click="sidebarCollapsed = !sidebarCollapsed"
             class="flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
@@ -240,7 +355,7 @@ watch(() => route.path, () => {
   if (isMobile.value) {
     sidebarOpen.value = false
   }
-  profileMenuExpanded.value = false; // Fermer le menu de profil à chaque changement de route
+  profileMenuExpanded.value = false;
 })
 
 onMounted(() => {
@@ -277,7 +392,7 @@ const closeSidebarAndProfileMenu = () => {
 
 const handleLogout = async () => {
   await authStore.logout();
-  router.push('/login');
+  router.push('/auth/login');
   closeSidebarAndProfileMenu();
 };
 </script>
