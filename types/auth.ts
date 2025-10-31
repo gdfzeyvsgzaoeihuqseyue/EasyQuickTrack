@@ -15,6 +15,7 @@ export interface Service {
   domain: string;
   role: 'user' | 'admin' | 'moderator';
   permissions: Record<string, any>;
+  lastAccess?: string;
 }
 
 export interface LoginResponse {

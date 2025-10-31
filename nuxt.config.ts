@@ -33,7 +33,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       pgsBaseAPI: process.env.PGS_API_URL,
-      pgsUserAPI: process.env.PGS_API_USER,
       pgsSharedFiles: process.env.PGS_SHARED_FILES,
       betaMode: process.env.BETA_MODE === 'true',
       siteIdentifier: process.env.SITE_IDENTIFIER || 'eqt',

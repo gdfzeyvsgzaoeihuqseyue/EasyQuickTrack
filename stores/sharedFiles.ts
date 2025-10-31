@@ -10,9 +10,9 @@ type CustomData = {
 }
 
 export const useSharedFiles = defineStore('sharedFiles', () => {
-  const runtimeConfig = useRuntimeConfig();
+  const config = useRuntimeConfig();
 
-  const SHARED_URL = runtimeConfig.public.pgsSharedFiles;
+  const SHARED_URL = config.public.pgsSharedFiles;
   const GNR_IMG = `${SHARED_URL}/_General/Images`;
   const GNR_DOC = `${SHARED_URL}/_General/Docs`;
   const APP_IMG = `${SHARED_URL}/EQT`;
