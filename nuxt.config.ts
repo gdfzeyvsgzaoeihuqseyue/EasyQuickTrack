@@ -36,6 +36,8 @@ export default defineNuxtConfig({
       pgsSharedFiles: process.env.PGS_SHARED_FILES,
       betaMode: process.env.BETA_MODE === 'true',
       siteIdentifier: process.env.SITE_IDENTIFIER || 'eqt',
+      serviceId: process.env.SERVICE_ID,
+      serviceApiKey: process.env.SERVICE_API_KEY,
     }
   },
 

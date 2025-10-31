@@ -12,7 +12,8 @@ export const useUserServiceStore = defineStore('userService', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  const grantAccess = async (input: GrantAccessInput, token: string) => {
+  // grantAccess
+  const grantAccess = async (input: GrantAccessInput, serviceApiKey: string) => {
     loading.value = true;
     error.value = null;
 
@@ -22,7 +23,7 @@ export const useUserServiceStore = defineStore('userService', () => {
         {
           method: 'POST',
           headers: {
-            'x-api-key': token,
+            'x-api-key': serviceApiKey,
           },
           body: input,
         }
@@ -37,7 +38,8 @@ export const useUserServiceStore = defineStore('userService', () => {
     }
   };
 
-  const revokeAccess = async (input: RevokeAccessInput, token: string) => {
+  // revokeAccess
+  const revokeAccess = async (input: RevokeAccessInput, serviceApiKey: string) => {
     loading.value = true;
     error.value = null;
 
@@ -47,7 +49,7 @@ export const useUserServiceStore = defineStore('userService', () => {
         {
           method: 'POST',
           headers: {
-            'x-api-key': token,
+            'x-api-key': serviceApiKey,
           },
           body: input,
         }
@@ -62,6 +64,7 @@ export const useUserServiceStore = defineStore('userService', () => {
     }
   };
 
+  // verifyServiceAccess
   const verifyServiceAccess = async (input: VerifyTokenInput) => {
     loading.value = true;
     error.value = null;

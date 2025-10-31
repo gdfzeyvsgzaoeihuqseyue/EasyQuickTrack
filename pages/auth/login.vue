@@ -94,10 +94,10 @@ const handleLogin = async () => {
       password: password.value,
     });
 
-    // Rediriger vers le tableau de bord après connexion réussie
-    router.push('/db');
+    // Redirection vers la page de paramétrage d'accès au service
+    // Cette page vérifiera si l'utilisateur a accès et accordera l'accès si nécessaire
+    router.push('/auth/grant-access');
   } catch (err) {
-    // L'erreur est déjà gérée dans le store
     console.error('Erreur de connexion:', err);
   }
 };
