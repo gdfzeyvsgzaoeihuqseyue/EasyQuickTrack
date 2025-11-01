@@ -42,9 +42,12 @@ export const usePageSpeedStore = defineStore('pageSpeed', () => {
   };
 
   return {
+    // State
     loading: readonly(loading),
     error: readonly(error),
     result: readonly(result),
+
+    // Actions
     analyzeUrl,
     clearError,
     clearResults,

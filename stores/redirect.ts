@@ -25,10 +25,10 @@ export const useRedirectStore = defineStore('redirect', () => {
 
       error.value = response.message || 'URL de redirection non fournie par le serveur.';
       return null;
-      
+
     } catch (err: any) {
       console.error('Erreur lors de la redirection:', err)
-      
+
       if (err.status === 404) {
         error.value = 'Lien court non trouvé'
       } else if (err.status === 403) {
@@ -37,7 +37,7 @@ export const useRedirectStore = defineStore('redirect', () => {
       else {
         error.value = err.data?.message || 'Une erreur est survenue lors de la redirection'
       }
-      
+
       return null
     } finally {
       loading.value = false

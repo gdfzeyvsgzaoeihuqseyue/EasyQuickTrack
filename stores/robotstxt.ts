@@ -23,7 +23,7 @@ export const useRobotsTxtStore = defineStore('robotstxt', () => {
       const response = await useApiFetch<GetRobotsTxtsResponse>('/eqt/robottxt', {
         params: { page, limit },
       });
-      robotsTxtConfigs.value = response.data; // Assigner des données mutables
+      robotsTxtConfigs.value = response.data;
       pagination.value = {
         currentPage: response.currentPage,
         totalPages: response.totalPages,
@@ -43,7 +43,7 @@ export const useRobotsTxtStore = defineStore('robotstxt', () => {
     error.value = null;
     try {
       const response = await useApiFetch<GetRobotsTxtResponse>(`/eqt/robottxt/${id}`);
-      currentRobotsTxtConfig.value = response.data; 
+      currentRobotsTxtConfig.value = response.data;
       return response.data;
     } catch (err: any) {
       console.error('Erreur lors de la récupération de la config robots.txt:', err);
@@ -62,7 +62,6 @@ export const useRobotsTxtStore = defineStore('robotstxt', () => {
         method: 'PUT',
         body: payload,
       });
-      // Mettre à jour la config dans la liste et la config courante
       const index = robotsTxtConfigs.value.findIndex(c => c.id === id);
       if (index !== -1) {
         robotsTxtConfigs.value[index] = response.data;
@@ -129,9 +128,9 @@ export const useRobotsTxtStore = defineStore('robotstxt', () => {
     try {
       const params = sitemapUrl ? { sitemapUrl } : {};
       const response = await $fetch<string>('/eqt/robotstxt-serve', {
-        baseURL: useRuntimeConfig().public.pgsBaseAPI, 
+        baseURL: useRuntimeConfig().public.pgsBaseAPI,
         params,
-        responseType: 'text', // Réponse texte
+        responseType: 'text',
       });
       return response;
     } catch (err: any) {

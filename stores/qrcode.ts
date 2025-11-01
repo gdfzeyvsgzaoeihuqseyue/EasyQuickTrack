@@ -4,6 +4,7 @@ import type { QRCodeRecord, QRCodeOptions, QRCodeResponse, GetQRCodesResponse, G
 
 export const useQRCodeStore = defineStore('qrcode', () => {
   const config = useRuntimeConfig()
+  const baseUrl = config.public.pgsBaseAPI
 
   // State
   const qrCodes = ref<QRCodeRecord[]>([])
@@ -12,7 +13,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
   const error = ref<string>('')
   const generatedQRCode = ref<Blob | null>(null)
   const qrCodeUrl = ref<string>('')
-  
+
   // Pagination
   const pagination = ref({
     currentPage: 1,
@@ -53,12 +54,12 @@ export const useQRCodeStore = defineStore('qrcode', () => {
     try {
       if (download) {
         // Pour télécharger le fichier binaire
-        const response = await fetch(`${config.public.pgsBaseAPI}/eqt/qrcode/${id}?download=true`)
+        const response = await fetch(`${baseUrl}/eqt/qrcode/${id}?download=true`)
         if (!response.ok) {
           throw new Error('Erreur lors du téléchargement')
         }
         const blob = await response.blob()
-        
+
         // Créer un lien de téléchargement
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
@@ -68,7 +69,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
         link.click()
         document.body.removeChild(link)
         URL.revokeObjectURL(url)
-        
+
         return null
       } else {
         // Pour récupérer les données JSON
@@ -81,13 +82,13 @@ export const useQRCodeStore = defineStore('qrcode', () => {
       }
     } catch (err: any) {
       console.error('Erreur lors de la récupération du QR code:', err)
-      
+
       if (err.status === 404) {
         error.value = 'QR code non trouvé'
       } else {
         error.value = err.data?.message || 'Une erreur est survenue lors de la récupération du QR code'
       }
-      
+
       return null
     } finally {
       loading.value = false
@@ -120,7 +121,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
       return updatedQRCode
     } catch (err: any) {
       console.error('Erreur lors de la mise à jour du QR code:', err)
-      
+
       if (err.status === 404) {
         error.value = 'QR code non trouvé'
       } else if (err.status === 400) {
@@ -128,7 +129,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
       } else {
         error.value = err.data?.message || 'Une erreur est survenue lors de la mise à jour'
       }
-      
+
       return null
     } finally {
       loading.value = false
@@ -159,13 +160,13 @@ export const useQRCodeStore = defineStore('qrcode', () => {
       return true
     } catch (err: any) {
       console.error('Erreur lors de la suppression du QR code:', err)
-      
+
       if (err.status === 404) {
         error.value = 'QR code non trouvé'
       } else {
         error.value = err.data?.message || 'Une erreur est survenue lors de la suppression'
       }
-      
+
       return false
     } finally {
       loading.value = false
@@ -175,10 +176,10 @@ export const useQRCodeStore = defineStore('qrcode', () => {
   const generateQRCodeFromLink = async (linkId: string, options: QRCodeOptions = {}): Promise<QRCodeResponse | null> => {
     loading.value = true
     error.value = ''
-    
+
     try {
       const params = new URLSearchParams()
-      
+
       // Ajouter les options comme paramètres de requête
       if (options.format) params.append('format', options.format)
       if (options.size) params.append('size', options.size.toString())
@@ -191,8 +192,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
       if (options.addSignature !== undefined) params.append('addSignature', options.addSignature.toString())
       if (options.signatureColor) params.append('signatureColor', options.signatureColor)
       if (options.signatureFontSize) params.append('signatureFontSize', options.signatureFontSize.toString())
-
-      const baseUrl = config.public.pgsBaseAPI
+        
       const url = `${baseUrl}/eqt/${linkId}/qrcode?${params.toString()}`
 
       // Créer FormData si un logo est fourni
@@ -206,7 +206,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
       if (options.logoFile) {
         const formData = new FormData()
         formData.append('logoFile', options.logoFile)
-        
+
         // Ajouter les autres paramètres au FormData
         Object.entries(options).forEach(([key, value]) => {
           if (key !== 'logoFile' && value !== undefined) {
@@ -229,7 +229,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
 
       const blob = await response.blob()
       generatedQRCode.value = blob
-      
+
       // Créer une URL pour l'affichage
       if (qrCodeUrl.value) {
         URL.revokeObjectURL(qrCodeUrl.value)
@@ -255,15 +255,14 @@ export const useQRCodeStore = defineStore('qrcode', () => {
   const generateQRCodeFromUrl = async (url: string, options: QRCodeOptions = {}): Promise<QRCodeResponse | null> => {
     loading.value = true
     error.value = ''
-    
+
     try {
-      const baseUrl = config.public.pgsBaseAPI
       const endpoint = `${baseUrl}/eqt/qrcode`
 
       // Préparer les données
       const formData = new FormData()
       formData.append('url', url)
-      
+
       // Ajouter les options
       Object.entries(options).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -287,7 +286,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
 
       const blob = await response.blob()
       generatedQRCode.value = blob
-      
+
       // Créer une URL pour l'affichage
       if (qrCodeUrl.value) {
         URL.revokeObjectURL(qrCodeUrl.value)

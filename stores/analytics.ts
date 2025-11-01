@@ -62,7 +62,6 @@ export const useAnalyticsStore = defineStore('analytics', () => {
     try {
       const response = await useApiFetch<GetLinkWithAnalyticsResponse>(`/eqt/link/${linkId}`);
 
-      // Correction: accès correct aux analytics
       currentLinkAnalytics.value = (response.data.analytics || []).map((a: ShortLinkAnalytics) => ({
         ...a,
         shortLink: response.data.shortCode || response.data.shortLink || linkId,
@@ -120,8 +119,8 @@ export const useAnalyticsStore = defineStore('analytics', () => {
       const country = entry.geolocalisation?.pays || 'Inconnu';
       countryCounts[country] = (countryCounts[country] || 0) + 1;
 
-      const city = entry.geolocalisation?.ville || 'Inconnue'; 
-      cityCounts[city] = (cityCounts[city] || 0) + 1; 
+      const city = entry.geolocalisation?.ville || 'Inconnue';
+      cityCounts[city] = (cityCounts[city] || 0) + 1;
 
       const device = entry.appareil?.type || 'Inconnu';
       deviceCounts[device] = (deviceCounts[device] || 0) + 1;
@@ -132,11 +131,11 @@ export const useAnalyticsStore = defineStore('analytics', () => {
       const sourceName = entry.source?.nom || 'Inconnu';
       sourceCounts[sourceName] = (sourceCounts[sourceName] || 0) + 1;
 
-      const os = entry.appareil?.os || 'Inconnu'; // Ajoute cette ligne
-      osCounts[os] = (osCounts[os] || 0) + 1; // Ajoute cette ligne
+      const os = entry.appareil?.os || 'Inconnu';
+      osCounts[os] = (osCounts[os] || 0) + 1;
 
-      const language = entry.langue || 'Inconnu'; // Ajoute cette ligne
-      languageCounts[language] = (languageCounts[language] || 0) + 1; // Ajoute cette ligne
+      const language = entry.langue || 'Inconnu';
+      languageCounts[language] = (languageCounts[language] || 0) + 1;
     });
 
     const getClicksByDay = (): [string, number][] => {
@@ -153,7 +152,6 @@ export const useAnalyticsStore = defineStore('analytics', () => {
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
-      // Retourner au format [string, number][]
       return dates.map(date => [date, dailyCounts[date] || 0] as [string, number]);
     };
 
@@ -164,7 +162,6 @@ export const useAnalyticsStore = defineStore('analytics', () => {
         hourlyCounts[hour] = (hourlyCounts[hour] || 0) + 1;
       });
 
-      // Retourner au format [string, number][]
       return Array.from({ length: 24 }, (_, hour) =>
         [`${hour}h`, hourlyCounts[hour] || 0] as [string, number]
       );
@@ -195,6 +192,7 @@ export const useAnalyticsStore = defineStore('analytics', () => {
   });
 
   return {
+    // State
     allAnalytics: readonly(allAnalytics),
     currentLinkAnalytics: readonly(currentLinkAnalytics),
     loading: readonly(loading),
@@ -202,10 +200,12 @@ export const useAnalyticsStore = defineStore('analytics', () => {
     dateRange,
     topPerformingLinks,
 
+    // Actions
     fetchAllLinksAnalytics,
     fetchAnalyticsForLink,
     clearError,
 
+    // Getters
     globalAnalyticsData,
     selectedLinkAnalyticsData,
   };

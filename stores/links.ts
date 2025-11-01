@@ -32,7 +32,7 @@ export const useLinksStore = defineStore('links', () => {
 
       const newLink = response.link
 
-      // Ajouter le nouveau lien au début de la liste s'il n'existe pas déjà
+      // Ajouter le nouveau lien au début de la liste
       const existingIndex = links.value.findIndex(link => link.id === newLink.id)
       if (existingIndex === -1) {
         links.value.unshift(newLink)

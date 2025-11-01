@@ -21,7 +21,7 @@ export const useLogsStore = defineStore('logs', () => {
       linkDetails.value = response.linkDetails
     } catch (err: any) {
       console.error('Erreur lors de la récupération des logs:', err)
-      
+
       if (err.status === 404) {
         error.value = 'Aucun log trouvé pour ce lien'
       } else {
