@@ -5,50 +5,56 @@ import type { User, Service, LoginResponse, RegisterResponse, RegisterInput, Log
 export const useAuthStore = defineStore('auth', () => {
   const config = useRuntimeConfig();
   const apiUrl = config.public.pgsBaseAPI;
-
+  
   const user = ref<User | null>(null);
   const accessToken = ref<string | null>(null);
   const refreshToken = ref<string | null>(null);
   const services = ref<Service[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
-
+  
+  let refreshInterval: NodeJS.Timeout | null = null;
+  
   const isLoggedIn = computed(() => !!user.value && !!accessToken.value);
-
+  
   const hasEqtMeAccess = computed(() => {
-    return services.value.some(service => service.domain === 'https://eqt.me');
+    const eqtService = services.value.find(service => service.domain === 'https://eqt.me');
+    return eqtService ? (eqtService.isActive === true || eqtService.isActive === undefined) : false;
   });
-
+  
   const login = async (credentials: LoginInput) => {
     loading.value = true;
     error.value = null;
-
+    
     try {
       const response = await $fetch<LoginResponse>(`${apiUrl}/user/auth/login`, {
         method: 'POST',
         body: credentials,
       });
-
+      
       user.value = response.user;
       accessToken.value = response.accessToken;
       refreshToken.value = response.refreshToken;
-
       services.value = response.services.map(s => ({
         serviceId: s.serviceId,
         serviceName: s.serviceName,
         domain: s.domain,
         role: s.role as 'user' | 'admin' | 'moderator',
         permissions: s.permissions,
-        lastAccess: s.lastAccess
+        lastAccess: s.lastAccess,
+        isActive: s.isActive !== undefined ? s.isActive : true // Par défaut true si non défini
       }));
-
+      
       if (process.client) {
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
         localStorage.setItem('user', JSON.stringify(response.user));
         localStorage.setItem('services', JSON.stringify(services.value));
+        
+        // Démarrer le rafraîchissement automatique
+        startTokenRefresh();
       }
-
+      
       return response;
     } catch (err: any) {
       error.value = err.data?.message || 'Erreur de connexion';
@@ -57,17 +63,17 @@ export const useAuthStore = defineStore('auth', () => {
       loading.value = false;
     }
   };
-
+  
   const register = async (data: RegisterInput) => {
     loading.value = true;
     error.value = null;
-
+    
     try {
       const response = await $fetch<RegisterResponse>(`${apiUrl}/user/auth/register`, {
         method: 'POST',
         body: data,
       });
-
+      
       return response;
     } catch (err: any) {
       error.value = err.data?.message || 'Erreur d\'inscription';
@@ -76,11 +82,11 @@ export const useAuthStore = defineStore('auth', () => {
       loading.value = false;
     }
   };
-
+  
   const logout = async () => {
     loading.value = true;
     const tokenToRevoke = accessToken.value;
-
+    
     try {
       if (tokenToRevoke) {
         try {
@@ -98,27 +104,32 @@ export const useAuthStore = defineStore('auth', () => {
         }
       }
     } finally {
+      // Arrêter le rafraîchissement automatique
+      stopTokenRefresh();
+      
       user.value = null;
       accessToken.value = null;
       refreshToken.value = null;
       services.value = [];
-
+      
       if (process.client) {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
         localStorage.removeItem('services');
+        localStorage.removeItem('userProfile');
+        localStorage.removeItem('userServices');
       }
-
+      
       loading.value = false;
     }
   };
-
+  
   const refreshAccessToken = async () => {
     if (!refreshToken.value) {
       throw new Error('No refresh token available');
     }
-
+    
     try {
       const response = await $fetch<{ accessToken: string; expiresIn: number }>(
         `${apiUrl}/user/auth/refresh-token`,
@@ -129,43 +140,72 @@ export const useAuthStore = defineStore('auth', () => {
           },
         }
       );
-
+      
       accessToken.value = response.accessToken;
-
+      
       if (process.client) {
         localStorage.setItem('accessToken', response.accessToken);
       }
-
+      
       return response.accessToken;
     } catch (err) {
+      // En cas d'erreur, déconnecter l'utilisateur
       await logout();
       throw err;
     }
   };
-
+  
+  // Fonction pour démarrer le rafraîchissement automatique du token
+  const startTokenRefresh = () => {
+    if (refreshInterval) {
+      clearInterval(refreshInterval);
+    }
+    
+    // Rafraîchir le token toutes les 50 minutes (le token expire après 1h)
+    refreshInterval = setInterval(async () => {
+      try {
+        await refreshAccessToken();
+        console.log('Token rafraîchi automatiquement');
+      } catch (error) {
+        console.error('Erreur lors du rafraîchissement automatique:', error);
+      }
+    }, 50 * 60 * 1000); // 50 minutes
+  };
+  
+  // Fonction pour arrêter le rafraîchissement automatique
+  const stopTokenRefresh = () => {
+    if (refreshInterval) {
+      clearInterval(refreshInterval);
+      refreshInterval = null;
+    }
+  };
+  
   const updateServices = (newServices: Service[]) => {
     services.value = newServices;
     if (process.client) {
       localStorage.setItem('services', JSON.stringify(newServices));
     }
   };
-
+  
   const initAuth = () => {
     if (process.client) {
       const storedToken = localStorage.getItem('accessToken');
       const storedRefreshToken = localStorage.getItem('refreshToken');
       const storedUser = localStorage.getItem('user');
       const storedServices = localStorage.getItem('services');
-
+      
       if (storedToken && storedUser) {
         accessToken.value = storedToken;
         refreshToken.value = storedRefreshToken;
         user.value = JSON.parse(storedUser);
         services.value = storedServices ? JSON.parse(storedServices) : [];
+        
+        // Démarrer le rafraîchissement automatique si l'utilisateur est déjà connecté
+        startTokenRefresh();
       }
     }
   };
-
+  
   return {
     user: computed(() => user.value),
     accessToken: computed(() => accessToken.value),

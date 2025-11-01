@@ -12,7 +12,6 @@ export const useUserServiceStore = defineStore('userService', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  // grantAccess
   const grantAccess = async (input: GrantAccessInput, serviceApiKey: string) => {
     loading.value = true;
     error.value = null;
@@ -38,7 +37,6 @@ export const useUserServiceStore = defineStore('userService', () => {
     }
   };
 
-  // revokeAccess
   const revokeAccess = async (input: RevokeAccessInput, serviceApiKey: string) => {
     loading.value = true;
     error.value = null;
@@ -64,7 +62,6 @@ export const useUserServiceStore = defineStore('userService', () => {
     }
   };
 
-  // verifyServiceAccess
   const verifyServiceAccess = async (input: VerifyTokenInput) => {
     loading.value = true;
     error.value = null;

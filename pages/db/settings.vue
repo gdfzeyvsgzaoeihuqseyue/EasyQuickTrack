@@ -8,13 +8,7 @@
 
       <!-- Loading State -->
       <div v-if="profileStore.loading" class="flex justify-center items-center py-12">
-        <svg class="animate-spin h-10 w-10 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-          viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-          </path>
-        </svg>
+        <IconLoader2 class="animate-spin h-10 w-10 text-primary-600" />
       </div>
 
       <!-- Error State -->
@@ -115,10 +109,7 @@
       <!-- Aucun service -->
       <div v-else-if="!profileStore.loading" class="card p-6">
         <div class="text-center py-8">
-          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
+          <IconLock class="mx-auto h-12 w-12 text-gray-400" />
           <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun accès</h3>
           <p class="mt-1 text-sm text-gray-500">Vous n'avez pas encore accès au service EQT.me</p>
         </div>
@@ -135,10 +126,7 @@
           <div class="sm:flex sm:items-start">
             <div
               class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-              <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
+              <IconAlertTriangle class="h-6 w-6 text-red-600" />
             </div>
             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
               <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -162,13 +150,7 @@
             <button @click="handleRevokeAccess" :disabled="userServiceStore.loading" type="button"
               class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed">
               <span v-if="userServiceStore.loading" class="flex items-center">
-                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-                  viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                  </path>
-                </svg>
+                <IconLoader class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" />
                 Révocation...
               </span>
               <span v-else>Confirmer la révocation</span>
@@ -190,9 +172,11 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
 import { useUserProfileStore } from '~/stores/userProfile';
 import { useUserServiceStore } from '~/stores/userService';
+import { IconLoader2, IconLock, IconAlertTriangle, IconLoader } from '@tabler/icons-vue'
 
 definePageMeta({
   layout: 'dashboard',
+  requiresAuth: true
 });
 
 const authStore = useAuthStore();
@@ -221,7 +205,6 @@ const handleRevokeAccess = async () => {
   }
 
   try {
-    // Appel à revokeAccess avec le serviceApiKey (pas le accessToken)
     await userServiceStore.revokeAccess(
       {
         userId: authStore.user.id,
@@ -230,7 +213,6 @@ const handleRevokeAccess = async () => {
       SERVICE_API_KEY
     );
 
-    // Fermer la modal après succès
     showRevokeModal.value = false;
 
     // Déconnexion et redirection vers la page d'accueil

@@ -16,6 +16,7 @@ export interface ServiceAccess {
   role: 'user' | 'admin' | 'moderator';
   permissions: Record<string, any>;
   lastAccess?: string;
+  isActive?: boolean;
 }
 
 export interface ProfileResponse {

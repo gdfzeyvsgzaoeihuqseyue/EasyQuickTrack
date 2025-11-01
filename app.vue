@@ -7,11 +7,26 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
+import { useAuthStore } from '~/stores/auth';
+import { useUserProfileStore } from '~/stores/userProfile';
+
+const authStore = useAuthStore();
+const profileStore = useUserProfileStore();
+
 const runtimeConfig = useRuntimeConfig();
 const sharedFilesUrl = runtimeConfig.public.pgsSharedFiles;
 
 const heroImagePath = `${sharedFilesUrl}/EQT/metaImg.png`;
 const baseUrl = "https://eqt.netlify.app";
+
+onMounted(() => {
+  authStore.initAuth();
+
+  if (authStore.isLoggedIn) {
+    profileStore.initProfile();
+  }
+});
 
 useHead({
   titleTemplate: '%s | EASY QUICK TRACK',
@@ -21,7 +36,7 @@ useHead({
       name: 'description',
       content: 'Raccourcisseur de liens moderne.'
     },
-    
+
     // Open Graph (Facebook, LinkedIn)
     { property: 'og:title', content: 'EasyQuickTrack - Raccourcisseur d\'URL intelligent' },
     { property: 'og:description', content: 'Votre solution complète pour le web. Raccourcissez vos URLs, générez des QR codes, analysez les métadonnées de pages, sitemaps, robots.txt et plus encore pour booster votre SEO.' },
