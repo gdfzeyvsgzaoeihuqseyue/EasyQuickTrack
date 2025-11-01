@@ -8,23 +8,23 @@ import type {
 export const useUserServiceStore = defineStore('userService', () => {
   const config = useRuntimeConfig();
   const apiUrl = config.public.pgsBaseAPI;
-
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  const grantAccess = async (input: GrantAccessInput, serviceApiKey: string) => {
+  /**
+   * Accorder l'accès à un service
+   */
+  const grantAccess = async (input: GrantAccessInput) => {
     loading.value = true;
     error.value = null;
 
     try {
       const response = await $fetch<GrantAccessResponse>(
-        `${apiUrl}/user/service/grant-access`,
+        '/api/service/grant-access',
         {
           method: 'POST',
-          headers: {
-            'x-api-key': serviceApiKey,
-          },
           body: input,
+          credentials: 'include',
         }
       );
 
@@ -37,19 +37,20 @@ export const useUserServiceStore = defineStore('userService', () => {
     }
   };
 
-  const revokeAccess = async (input: RevokeAccessInput, serviceApiKey: string) => {
+  /**
+   * Révoquer l'accès à un service
+   */
+  const revokeAccess = async (input: RevokeAccessInput) => {
     loading.value = true;
     error.value = null;
 
     try {
       const response = await $fetch<RevokeAccessResponse>(
-        `${apiUrl}/user/service/revoke-access`,
+        '/api/service/revoke-access',
         {
           method: 'POST',
-          headers: {
-            'x-api-key': serviceApiKey,
-          },
           body: input,
+          credentials: 'include',
         }
       );
 
@@ -62,7 +63,10 @@ export const useUserServiceStore = defineStore('userService', () => {
     }
   };
 
-  const verifyServiceAccess = async (input: VerifyTokenInput) => {
+  /**
+   * Vérifier l'accès au service
+   */
+  const verifyServiceAccess = async (serviceDomain: string) => {
     loading.value = true;
     error.value = null;
 
@@ -71,7 +75,10 @@ export const useUserServiceStore = defineStore('userService', () => {
         `${apiUrl}/user/auth/verify-token`,
         {
           method: 'POST',
-          body: input,
+          body: {
+            serviceDomain: serviceDomain
+          },
+          credentials: 'include',
         }
       );
 

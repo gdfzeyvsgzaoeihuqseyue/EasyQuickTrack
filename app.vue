@@ -9,23 +9,16 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useAuthStore } from '~/stores/auth';
-import { useUserProfileStore } from '~/stores/userProfile';
 
 const authStore = useAuthStore();
-const profileStore = useUserProfileStore();
-
 const runtimeConfig = useRuntimeConfig();
 const sharedFilesUrl = runtimeConfig.public.pgsSharedFiles;
 
 const heroImagePath = `${sharedFilesUrl}/EQT/metaImg.png`;
 const baseUrl = "https://eqt.netlify.app";
 
-onMounted(() => {
-  authStore.initAuth();
-
-  if (authStore.isLoggedIn) {
-    profileStore.initProfile();
-  }
+onMounted(async () => {
+  await authStore.initAuth();
 });
 
 useHead({

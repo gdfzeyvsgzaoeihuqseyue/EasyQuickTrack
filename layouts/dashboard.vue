@@ -362,7 +362,7 @@ onMounted(() => {
   checkScreenSize()
   window.addEventListener('resize', checkScreenSize)
 
-  // Récupérer l'état du sidebar depuis le localStorage
+  // Récupérer l'état du sidebar
   const savedCollapsed = localStorage.getItem('sidebarCollapsed')
   if (savedCollapsed !== null) {
     sidebarCollapsed.value = JSON.parse(savedCollapsed)

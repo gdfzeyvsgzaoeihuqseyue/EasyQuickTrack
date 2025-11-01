@@ -183,10 +183,7 @@ const authStore = useAuthStore();
 const profileStore = useUserProfileStore();
 const userServiceStore = useUserServiceStore();
 const router = useRouter();
-const config = useRuntimeConfig();
-
 const showRevokeModal = ref(false);
-const SERVICE_API_KEY = config.public.serviceApiKey as string;
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -205,13 +202,10 @@ const handleRevokeAccess = async () => {
   }
 
   try {
-    await userServiceStore.revokeAccess(
-      {
-        userId: authStore.user.id,
-        serviceId: profileStore.eqtMeService.serviceId,
-      },
-      SERVICE_API_KEY
-    );
+    await userServiceStore.revokeAccess({
+      userId: authStore.user.id,
+      serviceId: profileStore.eqtMeService.serviceId,
+    });
 
     showRevokeModal.value = false;
 
@@ -224,9 +218,8 @@ const handleRevokeAccess = async () => {
 };
 
 onMounted(async () => {
-  if (authStore.accessToken) {
-    await profileStore.fetchProfile(authStore.accessToken);
-  }
+  // Charger le profil complet
+  await profileStore.fetchProfile();
 });
 
 useSeoMeta({

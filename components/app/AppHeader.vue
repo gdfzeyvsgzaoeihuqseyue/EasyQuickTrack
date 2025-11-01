@@ -61,6 +61,10 @@
                     <IconChartHistogram class="inline-block w-4 h-4 mr-2" /> Analytics
                   </NuxtLink>
                   <div class="border-t border-gray-100 my-1"></div>
+                  <NuxtLink to="/db/settings" @click="closeProfileMenu"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <IconUserCircle class="inline-block w-4 h-4 mr-2" /> Profil
+                  </NuxtLink>
                   <button @click="handleLogoutAndCloseMenu"
                     class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
                     <IconLogout class="inline-block w-4 h-4 mr-2" /> Déconnexion
@@ -117,6 +121,10 @@
                 <IconChartHistogram class="inline-block w-4 h-4 mr-2" /> Analytics
               </NuxtLink>
               <div class="border-t border-gray-100 my-1"></div>
+              <NuxtLink to="/db/settings" @click="closeMobileMenuAndProfileMenu"
+                class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                <IconUserCircle class="inline-block w-4 h-4 mr-2" /> Profil
+              </NuxtLink>
               <button @click="handleLogoutAndCloseMenu"
                 class="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md">
                 <IconLogout class="inline-block w-4 h-4 mr-2" /> Déconnexion

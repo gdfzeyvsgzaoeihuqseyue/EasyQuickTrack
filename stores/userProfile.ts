@@ -20,16 +20,14 @@ export const useUserProfileStore = defineStore('userProfile', () => {
     return services.value.find(service => service.domain === 'https://eqt.me');
   });
   
-  const fetchProfile = async (token: string) => {
+  const fetchProfile = async () => {
     loading.value = true;
     error.value = null;
     
     try {
       const response = await $fetch<ProfileResponse>(`${apiUrl}/user/profile`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include',
       });
       
       profile.value = response.user;
@@ -40,16 +38,10 @@ export const useUserProfileStore = defineStore('userProfile', () => {
         serviceName: s.serviceName,
         domain: s.domain,
         role: s.role as 'user' | 'admin' | 'moderator',
-        permissions: s.permissions || {}, // S'assurer que permissions n'est jamais undefined
+        permissions: s.permissions || {},
         lastAccess: s.lastAccess,
-        isActive: s.isActive !== undefined ? s.isActive : true // Par défaut true si non défini
+        isActive: s.isActive !== undefined ? s.isActive : true
       }));
-      
-      // Persister les données dans localStorage si disponible
-      if (process.client) {
-        localStorage.setItem('userProfile', JSON.stringify(profile.value));
-        localStorage.setItem('userServices', JSON.stringify(services.value));
-      }
       
       return response;
     } catch (err: any) {
@@ -64,26 +56,6 @@ export const useUserProfileStore = defineStore('userProfile', () => {
     const serviceIndex = services.value.findIndex(s => s.domain === serviceDomain);
     if (serviceIndex !== -1) {
       services.value[serviceIndex].lastAccess = lastAccess;
-      
-      // Mettre à jour le localStorage
-      if (process.client) {
-        localStorage.setItem('userServices', JSON.stringify(services.value));
-      }
-    }
-  };
-  
-  const initProfile = () => {
-    if (process.client) {
-      const storedProfile = localStorage.getItem('userProfile');
-      const storedServices = localStorage.getItem('userServices');
-      
-      if (storedProfile) {
-        profile.value = JSON.parse(storedProfile);
-      }
-      
-      if (storedServices) {
-        services.value = JSON.parse(storedServices);
-      }
     }
   };
   
@@ -91,11 +63,6 @@ export const useUserProfileStore = defineStore('userProfile', () => {
     profile.value = null;
     services.value = [];
     error.value = null;
-    
-    if (process.client) {
-      localStorage.removeItem('userProfile');
-      localStorage.removeItem('userServices');
-    }
   };
   
   const clearError = () => {
@@ -111,7 +78,6 @@ export const useUserProfileStore = defineStore('userProfile', () => {
     eqtMeService,
     fetchProfile,
     updateServiceLastAccess,
-    initProfile,
     clearProfile,
     clearError,
   };

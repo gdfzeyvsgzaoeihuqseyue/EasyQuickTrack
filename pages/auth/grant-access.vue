@@ -2,14 +2,14 @@
   <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8 p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
 
-      <!-- Cas 1: Utilisateur déjà connecté avec accès actif au service -->
+      <!-- Utilisateur déjà connecté avec accès actif -->
       <div v-if="hasActiveEqtMeAccess" class="text-center">
         <div class="mb-6">
           <IconCircleCheck class="mx-auto h-12 w-12 text-green-600" />
         </div>
-        <h2 class="text-2xl font-extrabold text-gray-900 mb-2">Accès confirmé</h2>
+
         <p class="text-sm text-gray-600 mb-8">
-          Vous avez déjà accès au service EasyQuickTrack. Redirection en cours...
+          Redirection en cours<span class="loading-dots"></span>
         </p>
       </div>
 
@@ -25,7 +25,7 @@
         </NuxtLink>
       </div>
 
-      <!-- Cas 3: Formulaire pour accorder/réactiver l'accès -->
+      <!--Formulaire pour accorder/réactiver l'accès -->
       <div v-else>
         <div>
           <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -51,7 +51,7 @@
                 J'accepte les conditions d'utilisation
               </label>
               <p class="text-gray-500 text-xs mt-1">
-                En cochant cette case, vous acceptez les conditions d'utilisation de EasyQuickTrack (eqt.me).
+                En cochant cette case, vous acceptez les conditions d'utilisation de EasyQuickTrack.
               </p>
             </div>
           </div>
@@ -105,8 +105,6 @@ const successMessage = ref<string | null>(null);
 
 const config = useRuntimeConfig();
 const SERVICE_DOMAIN = 'https://eqt.me';
-const SERVICE_ID = config.public.serviceId as string;
-const SERVICE_API_KEY = config.public.serviceApiKey as string;
 
 // Vérifier si l'utilisateur a un accès ACTIF
 const hasActiveEqtMeAccess = computed(() => {
@@ -114,7 +112,7 @@ const hasActiveEqtMeAccess = computed(() => {
   return eqtService ? (eqtService.isActive === true || eqtService.isActive === undefined) : false;
 });
 
-// Vérifier si l'utilisateur a un accès INACTIF (existe mais isActive = false)
+// Vérifier si l'utilisateur a un accès INACTIF
 const hasInactiveEqtMeAccess = computed(() => {
   const eqtService = authStore.services.find(s => s.domain === SERVICE_DOMAIN);
   return eqtService ? eqtService.isActive === false : false;
@@ -141,7 +139,7 @@ const handleGrantAccess = async () => {
     return;
   }
 
-  if (!authStore.user || !authStore.accessToken) {
+  if (!authStore.user) {
     localError.value = 'Erreur d\'authentification. Veuillez vous reconnecter.';
     return;
   }
@@ -149,27 +147,20 @@ const handleGrantAccess = async () => {
   try {
     localError.value = null;
     successMessage.value = null;
+    const serviceId = await $fetch<string>('/api/service/get-service-id');
 
-    // Si l'accès existe mais est inactif, le réactiver
-    if (hasInactiveEqtMeAccess.value) { }
-
-    // Appel à grantAccess avec le serviceApiKey
-    const response = await userServiceStore.grantAccess(
-      {
-        userId: authStore.user.id,
-        serviceId: SERVICE_ID,
-        role: 'user',
-        customPermissions: {}
-      },
-      SERVICE_API_KEY
-    );
+    const response = await userServiceStore.grantAccess({
+      userId: authStore.user.id,
+      serviceId: serviceId,
+      role: 'user',
+      customPermissions: {}
+    });
 
     successMessage.value = hasInactiveEqtMeAccess.value
       ? 'Accès réactivé avec succès! Redirection en cours...'
       : 'Accès accordé avec succès! Redirection en cours...';
 
-    // Mettre à jour les services dans le store auth
-    const existingServiceIndex = authStore.services.findIndex(s => s.serviceId === SERVICE_ID);
+    const existingServiceIndex = authStore.services.findIndex(s => s.serviceId === serviceId);
 
     if (existingServiceIndex !== -1) {
       // Mettre à jour le service existant
@@ -183,7 +174,7 @@ const handleGrantAccess = async () => {
     } else {
       // Ajouter le nouveau service
       const newService = {
-        serviceId: SERVICE_ID,
+        serviceId: serviceId,
         serviceName: 'EasyQuickTrack',
         domain: SERVICE_DOMAIN,
         role: 'user' as const,
@@ -217,3 +208,29 @@ useSeoMeta({
   robots: 'noindex, nofollow',
 });
 </script>
+
+<style scoped>
+@keyframes dots {
+  0% {
+    content: "";
+  }
+
+  33% {
+    content: ".";
+  }
+
+  66% {
+    content: "..";
+  }
+
+  100% {
+    content: "...";
+  }
+}
+
+.loading-dots::after {
+  content: "";
+  display: inline-block;
+  animation: dots 1.2s steps(4, end) infinite;
+}
+</style>
