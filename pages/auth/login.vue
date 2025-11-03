@@ -93,7 +93,6 @@ const handleLogin = async () => {
     });
 
     // Redirection vers la page de paramétrage d'accès au service
-    // Cette page vérifiera si l'utilisateur a accès et accordera l'accès si nécessaire
     router.push('/auth/grant-access');
   } catch (err) {
     console.error('Erreur de connexion:', err);

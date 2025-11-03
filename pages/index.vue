@@ -22,9 +22,9 @@
           </p>
 
           <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <NuxtLink to="/db" class="btn-primary text-lg px-8 py-4">
+            <button @click="handleGetStarted" class="btn-primary text-lg px-8 py-4">
               Commencer gratuitement
-            </NuxtLink>
+            </button>
             <NuxtLink to="/contact" class="btn-secondary text-lg px-8 py-4">
               Nous contacter
             </NuxtLink>
@@ -148,6 +148,23 @@ import { IconLink, IconDeviceAnalytics, IconLock } from '@tabler/icons-vue';
 import { UrlShortener } from '@/components/link'
 import { QRCodeGenerator } from '@/components/qrcode'
 import { useSharedFiles } from '~/stores/sharedFiles';
+import { useAuthStore } from '~/stores/auth';
+import { useRouter } from 'vue-router';
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const handleGetStarted = async () => {
+  if (authStore.isLoggedIn) {
+    if (authStore.hasEqtMeAccess) {
+      router.push('/db');
+    } else {
+      router.push('/auth/grant-access');
+    }
+  } else {
+    router.push('/auth/login');
+  }
+};
 
 const sharedFiles = useSharedFiles();
 const componentMode = ref('shortener');
