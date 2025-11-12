@@ -50,7 +50,11 @@
           </button>
         </div>
 
-        <UrlShortener v-if="componentMode === 'shortener'" />
+        <!-- Afficher le composant approprié selon l'authentification -->
+        <template v-if="componentMode === 'shortener'">
+          <UrlShortener v-if="authStore.isLoggedIn" />
+          <UrlShortenerGuest v-else />
+        </template>
         <QRCodeGenerator v-else-if="componentMode === 'qrcode'" />
       </div>
     </section>
@@ -145,7 +149,7 @@ import { ref, onMounted, computed, watch } from 'vue';
 import { useLinksStore } from '~/stores/links';
 import { useAnalyticsStore } from '~/stores/analytics';
 import { IconLink, IconDeviceAnalytics, IconLock } from '@tabler/icons-vue';
-import { UrlShortener } from '@/components/link'
+import { UrlShortener, UrlShortenerGuest } from '@/components/link'
 import { QRCodeGenerator } from '@/components/qrcode'
 import { useSharedFiles } from '~/stores/sharedFiles';
 import { useAuthStore } from '~/stores/auth';

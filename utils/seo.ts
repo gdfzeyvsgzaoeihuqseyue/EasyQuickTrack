@@ -30,6 +30,13 @@ export const useSeo = () => {
           keywords: 'url, racourcie, diminuteur, Bénin, PGS, Pro Gestion Soft',
           robots: 'index, follow',
         },
+        guestLink: {
+          title: 'Easy Quick Track - Votre solution complète pour le web.',
+          ogImage: `${SHARED_URL}/SuitOps_Landing/Hero/index.png`,
+          url: baseUrl,
+          keywords: 'url, racourcie, diminuteur, Bénin, PGS, Pro Gestion Soft',
+          robots: 'index, nofollow',
+        },
         403: {
           title: 'Accès Interdit',
           description: "Vous n'avez pas l'autorisation d'accéder à cette page.",

@@ -8,6 +8,8 @@ export const useLinksStore = defineStore('links', () => {
   // State
   const links = ref<ShortLink[]>([])
   const currentLink = ref<ShortLink | null>(null)
+  const guestLink = ref<ShortLink | null>(null)
+  const guestToken = ref<string | null>(null)
   const loading = ref(false)
   const error = ref<string | LinkStatusError | null>(null)
   const metadataLoading = ref(false)
@@ -27,7 +29,7 @@ export const useLinksStore = defineStore('links', () => {
     try {
       const response = await useApiFetch<CreateLinkResponse>('/eqt/link', {
         method: 'POST',
-        body: { longUrl, alias, activateAt, expiresAt } 
+        body: { longUrl, alias, activateAt, expiresAt }
       });
 
       const newLink = response.link
@@ -90,7 +92,7 @@ export const useLinksStore = defineStore('links', () => {
       return response.data
     } catch (err: any) {
       console.error('Erreur lors de la récupération du lien:', err)
-      
+
       if (err.status === 404) {
         error.value = 'Lien non trouvé'
       } else if (err.status === 403 && err.data) {
@@ -103,7 +105,7 @@ export const useLinksStore = defineStore('links', () => {
       } else {
         error.value = err.data?.message || 'Une erreur est survenue lors de la récupération du lien'
       }
-      
+
       return null
     } finally {
       loading.value = false
@@ -160,7 +162,7 @@ export const useLinksStore = defineStore('links', () => {
       return updatedLink
     } catch (err: any) {
       console.error('Erreur lors de la mise à jour du lien:', err)
-      
+
       if (err.status === 404) {
         error.value = 'Lien non trouvé.'
       } else if (err.status === 400 && err.data?.message?.includes('nombre maximum')) {
@@ -172,7 +174,7 @@ export const useLinksStore = defineStore('links', () => {
       } else {
         error.value = err.data?.message || 'Une erreur inattendue est survenue lors de la mise à jour.'
       }
-      
+
       return null
     } finally {
       loading.value = false
@@ -203,13 +205,13 @@ export const useLinksStore = defineStore('links', () => {
       return true
     } catch (err: any) {
       console.error('Erreur lors de la suppression du lien:', err)
-      
+
       if (err.status === 404) {
         error.value = 'Lien non trouvé'
       } else {
         error.value = err.data?.message || 'Une erreur est survenue lors de la suppression du lien'
       }
-      
+
       return false
     } finally {
       loading.value = false
@@ -259,17 +261,84 @@ export const useLinksStore = defineStore('links', () => {
       return updatedLink
     } catch (err: any) {
       console.error('Erreur lors du changement de statut du lien:', err)
-      
+
       if (err.status === 404) {
         error.value = 'Lien non trouvé.'
       } else {
         error.value = err.data?.message || 'Une erreur est survenue lors du changement de statut.'
       }
-      
+
       return null
     } finally {
       loading.value = false
     }
+  }
+
+  // Créer un lien en tant qu'invité
+  const createGuestShortLink = async (longUrl: string): Promise<{ link: ShortLink; token: string } | null> => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await $fetch<{
+        message: string;
+        link: ShortLink;
+        guestAccessToken: string
+      }>(`${config.public.pgsBaseAPI}/eqt/link`, {
+        method: 'POST',
+        body: { longUrl }
+      });
+
+      guestLink.value = response.link
+      guestToken.value = response.guestAccessToken
+
+      return {
+        link: response.link,
+        token: response.guestAccessToken
+      }
+    } catch (err: any) {
+      console.error('Erreur lors de la création du lien invité:', err)
+      error.value = err.data?.message || 'Une erreur est survenue lors de la création du lien'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // Récupérer un lien invité avec son token
+  const fetchGuestLink = async (identifier: string, token: string): Promise<ShortLink | null> => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await $fetch<{
+        success: boolean;
+        message: string;
+        data: ShortLink
+      }>(`${config.public.pgsBaseAPI}/eqt/link/guest/${identifier}`, {
+        params: { token }
+      });
+
+      guestLink.value = response.data
+      return response.data
+    } catch (err: any) {
+      console.error('Erreur lors de la récupération du lien invité:', err)
+
+      if (err.status === 401) {
+        error.value = 'Accès refusé : Identifiant ou Jeton invalide.'
+      } else {
+        error.value = err.data?.message || 'Une erreur est survenue'
+      }
+
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const clearGuestLink = (): void => {
+    guestLink.value = null
+    guestToken.value = null
   }
 
   // Getters
@@ -302,6 +371,8 @@ export const useLinksStore = defineStore('links', () => {
     // State
     links: readonly(links),
     currentLink: readonly(currentLink),
+    guestLink: readonly(guestLink),
+    guestToken: readonly(guestToken),
     loading: readonly(loading),
     error: readonly(error),
     metadataLoading: readonly(metadataLoading),
@@ -310,8 +381,10 @@ export const useLinksStore = defineStore('links', () => {
 
     // Actions
     createShortLink,
+    createGuestShortLink,
     fetchLinks,
     fetchLinkById,
+    fetchGuestLink,
     extractMetadata,
     updateLink,
     deleteLink,
@@ -320,6 +393,7 @@ export const useLinksStore = defineStore('links', () => {
     clearError,
     clearMetadataError,
     clearCurrentLink,
+    clearGuestLink,
 
     // Getters
     totalClicks,

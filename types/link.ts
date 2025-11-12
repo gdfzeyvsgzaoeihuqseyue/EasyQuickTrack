@@ -16,6 +16,11 @@ export interface ShortLink {
   metadata?: LinkMetadata;
 }
 
+export interface GuestShortLink extends ShortLink {
+  isGuestLink: boolean
+  guestAccessToken?: string
+}
+
 export interface LinkStatusError {
   message: string;
   reason?: 'disabled' | 'not_yet_active' | 'expired';
@@ -53,4 +58,17 @@ export interface ShortLinkResponse {
       lastUpdated?: number
     }
   }
+}
+
+export interface CreateGuestLinkResponse {
+  success: boolean
+  message: string
+  link: GuestShortLink
+  guestAccessToken: string
+}
+
+export interface GetGuestLinkResponse {
+  success: boolean
+  message: string
+  data: GuestShortLink
 }
