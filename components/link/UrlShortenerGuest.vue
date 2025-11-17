@@ -23,7 +23,10 @@
             <NuxtLink to="/auth/login" class="font-semibold underline hover:text-primary-700">
               Connectez-vous
             </NuxtLink>
-            pour accéder à des fonctionnalités complètes et avancées.
+            pour accéder à des fonctionnalités complètes et avancées <br> 
+            ou <NuxtLink to="/auth/login" class="font-semibold underline hover:text-primary-700">
+              consultez
+            </NuxtLink> les statistiques de vos liens.
           </p>
         </div>
 
