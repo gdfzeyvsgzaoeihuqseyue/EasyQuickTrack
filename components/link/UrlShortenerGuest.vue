@@ -17,17 +17,35 @@
           </div>
         </div>
 
-        <div class="mt-4 p-4 bg-primary-50 border border-primary-200 rounded-lg">
-          <p class="text-sm">
-            <IconInfoCircle class="w-4 h-4 inline mr-1" />
-            <NuxtLink to="/auth/login" class="font-semibold underline hover:text-primary-700">
-              Connectez-vous
-            </NuxtLink>
-            pour accéder à des fonctionnalités complètes et avancées <br> 
-            ou <NuxtLink to="/auth/login" class="font-semibold underline hover:text-primary-700">
-              consultez
-            </NuxtLink> les statistiques de vos liens.
-          </p>
+        <div class="mt-4 p-4 bg-white border border-gray-200 rounded-xl shadow-lg">
+          <div class="flex items-start space-x-3">
+            <IconInfoCircle class="w-6 h-6 flex-shrink-0 text-primary-600 mt-0.5" />
+
+            <div class="text-sm text-gray-700">
+              <p class="font-bold text-primary-800 mb-2">
+                Débloquez plus de puissance
+              </p>
+
+              <p class="mb-3 leading-relaxed">
+                <span class="font-medium">Connectez-vous</span> pour accéder à des fonctionnalités complètes et
+                avancées.
+              </p>
+
+              <div class="mt-4 pt-3 border-t border-gray-100 flex space-x-4 justify-center">
+                <NuxtLink to="/auth/login"
+                  class="font-semibold text-primary-600 hover:text-primary-800 transition-colors flex items-center">
+                  <span class="underline">Connectez-vous</span>
+                </NuxtLink>
+
+                <span class="text-gray-300">|</span>
+
+                <NuxtLink to="/guest-link"
+                  class="font-semibold text-gray-500 hover:text-gray-700 transition-colors underline flex items-center">
+                  Statistiques publiques
+                </NuxtLink>
+              </div>
+            </div>
+          </div>
         </div>
 
         <button type="submit" :disabled="linksStore.loading || !longUrl"

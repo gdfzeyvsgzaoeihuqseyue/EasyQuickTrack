@@ -69,6 +69,11 @@
                     class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
                     <IconLogout class="inline-block w-4 h-4 mr-2" /> Déconnexion
                   </button>
+                  <div class="border-t border-gray-100 my-1"></div>
+                  <NuxtLink to="/guest-link" @click="closeProfileMenu"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <IconAccessible class="inline-block w-4 h-4 mr-2" /> Lien public
+                  </NuxtLink>
                 </div>
               </div>
             </template>
@@ -129,6 +134,11 @@
                 class="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md">
                 <IconLogout class="inline-block w-4 h-4 mr-2" /> Déconnexion
               </button>
+              <div class="border-t border-gray-100 my-1"></div>
+              <NuxtLink to="/guest-link" @click="closeMobileMenuAndProfileMenu"
+                class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                <IconAccessible class="inline-block w-4 h-4 mr-2" /> Lien public
+              </NuxtLink>
             </div>
           </div>
         </template>
@@ -141,7 +151,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
-import { IconMenu2, IconUserCircle, IconChevronDown, IconDeviceDesktop, IconLink, IconQrcode, IconChartHistogram, IconLogout } from '@tabler/icons-vue'
+import { IconMenu2, IconUserCircle, IconChevronDown, IconDeviceDesktop, IconLink, IconQrcode, IconChartHistogram, IconLogout, IconAccessible } from '@tabler/icons-vue'
 import { useSharedFiles } from '~/stores/sharedFiles';
 
 const config = useRuntimeConfig();
@@ -161,13 +171,15 @@ const computedNavItems = computed(() => {
       { label: 'Tarifs', to: '/pricing' },
       { label: 'À propos', to: '/about' },
       { label: 'Contact', to: '/contact' },
-      { label: authStore.user ? `Bonjour, ${authStore.user.firstName}` : 'Mon profil', to: '#', isDropdown: true }
+      { label: 'Lien public', to: '/guest-link' },
+      { label: authStore.user ? `Salut, ${authStore.user.firstName}` : 'Mon profil', to: '#', isDropdown: true }
     ];
   } else {
     return [
       { label: 'Tarifs', to: '/pricing' },
       { label: 'À propos', to: '/about' },
       { label: 'Contact', to: '/contact' },
+      { label: 'Lien public', to: '/guest-link' },
       { label: 'Se connecter', to: '/auth/login', isButton: true }
     ];
   }

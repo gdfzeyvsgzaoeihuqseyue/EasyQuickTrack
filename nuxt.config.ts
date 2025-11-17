@@ -33,6 +33,9 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   
   runtimeConfig: {
+    mistralApiKey: process.env.NOAH_MISTRAL_KEY,
+    geminiApiKey: process.env.NOAH_GEMINI_KEY,
+    
     serviceId: process.env.SERVICE_ID,
     serviceApiKey: process.env.SERVICE_API_KEY,
     
@@ -72,15 +75,15 @@ export default defineNuxtConfig({
   },
   
   // Nitro pour le proxy et les cookies
-  nitro: {
-    devProxy: {
-      '/api': {
-        target: process.env.PGS_API_URL,
-        changeOrigin: true,
-        cookieDomainRewrite: '',
-      }
-    }
-  },
+  // nitro: {
+  //   devProxy: {
+  //     '/api': {
+  //       target: process.env.PGS_API_URL,
+  //       changeOrigin: true,
+  //       cookieDomainRewrite: '',
+  //     }
+  //   }
+  // },
   
   // Routage pour les cookies
   router: {

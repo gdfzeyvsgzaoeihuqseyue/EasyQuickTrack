@@ -20,7 +20,7 @@
           <form @submit.prevent="fetchLinkData" class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Code court du lien ou ID
+                Code court du lien
               </label>
               <input v-model="linkIdentifier" type="text" placeholder="abc123"
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
