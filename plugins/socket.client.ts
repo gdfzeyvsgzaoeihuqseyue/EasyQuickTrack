@@ -3,20 +3,30 @@ console.log('Socket.IO plugin is loading...')
 
 declare module '#app' {
   interface NuxtApp {
-    $socket: Socket;
+    $socket: Socket | null;
   }
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
-  // const baseAPI = config.public.pgsBaseAPI as string;
-  // const socketUrl = baseAPI.replace(/\/api\/v1\/?$/, '');
   const baseAPI = config.public.pgsBaseAPI || ''
-  const socketUrl = baseAPI ? baseAPI.replace(/\/api\/v1\/?$/, '') : ''
-  if (!socketUrl) console.warn('⚠️ Socket URL non défini. Vérifie ton .env')
+
+  // Ne pas initialiser le socket si l'URL n'est pas définie
+  if (!baseAPI) {
+    console.warn('⚠️ Socket URL non défini. Socket.IO désactivé.')
+    nuxtApp.provide('socket', null);
+    return;
+  }
+
+  const socketUrl = baseAPI.replace(/\/api\/v1\/?$/, '')
+
   const socket = io(socketUrl, {
     transports: ['websocket'],
     autoConnect: true,
+    timeout: 5000,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    reconnectionAttempts: 3,
   });
 
   socket.on('connect', () => {

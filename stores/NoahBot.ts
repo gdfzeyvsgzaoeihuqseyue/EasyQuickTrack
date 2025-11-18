@@ -10,6 +10,8 @@ export const useChatbotStore = defineStore('chatbot', () => {
   const isLoading = ref(false);
   const sessionId = ref<string>('');
   const contextPage = ref<string>('');
+  const lastSaveTimestamp = ref<number>(0);
+  const saveThrottleDelay = 10000;
 
   const config = ref<ChatbotConfig>({
     agent: 'auto',
@@ -29,11 +31,12 @@ export const useChatbotStore = defineStore('chatbot', () => {
 
   // Initialiser une nouvelle conversation
   const initConversation = (page?: string) => {
-    if (!sessionId.value) {
-      sessionId.value = generateSessionId();
-      contextPage.value = page || window.location.pathname;
+    const currentPage = page || window.location.pathname;
 
-      // Charger l'historique depuis localStorage
+    if (!sessionId.value || contextPage.value !== currentPage) {
+      sessionId.value = generateSessionId();
+      contextPage.value = currentPage;
+
       loadConversationHistory();
     }
   };
@@ -73,27 +76,35 @@ export const useChatbotStore = defineStore('chatbot', () => {
 
     // Génération d'images (Mistral)
     const imageKeywords = [
-      'génère une image', 'crée une image', 'dessine', 'génération d\'image',
-      'créer une image', 'generate image', 'draw', 'illustration visuelle'
+      'image', 'illustration', 'dessine', 'génère', 'crée', 'visual',
+      'photo', 'picture', 'drawing', 'artwork', 'design graphique',
+      'logo', 'bannière', 'affiche', 'poster'
     ];
 
-    // Recherche web approfondie (Gemini meilleur)
+    // Recherche web approfondie (Gemini)
     const webSearchKeywords = [
-      'recherche', 'cherche sur internet', 'trouve sur le web',
-      'actualités', 'dernières infos', 'quoi de neuf'
+      'recherche', 'cherche', 'trouve', 'internet', 'web',
+      'actualités', 'infos', 'nouvelles', 'récent', 'dernier'
     ];
 
-    const hasImageKeyword = imageKeywords.some(kw => lowerContent.includes(kw));
-    const hasWebSearchKeyword = webSearchKeywords.some(kw => lowerContent.includes(kw));
+    const imageKeywordCount = imageKeywords.filter(kw => lowerContent.includes(kw)).length;
+    const webSearchKeywordCount = webSearchKeywords.filter(kw => lowerContent.includes(kw)).length;
+    const hasVisualIntent = /\b(montre|affiche|visualise|voir|regarde)\b.*\b(image|illustration|logo|design)\b/i.test(content);
+    const hasCreateIntent = /\b(crée|génère|fais|fait|créer|générer|faire)\b.*\b(image|illustration|visuel)\b/i.test(content);
 
-    // Si demande explicite de génération d'image, utiliser Mistral
-    if (hasImageKeyword) {
+    // Si détection d'intention visuelle ou création, utiliser Mistral
+    if (hasVisualIntent || hasCreateIntent || imageKeywordCount >= 2) {
       return 'mistral';
     }
 
-    // Si demande de recherche web, privilégier Gemini
-    if (hasWebSearchKeyword) {
+    // Si demande de recherche web explicite
+    if (webSearchKeywordCount >= 2) {
       return 'gemini';
+    }
+
+    // Si un seul mot-clé image trouvé
+    if (imageKeywordCount >= 1) {
+      return 'mistral';
     }
 
     // Par défaut, utiliser Mistral
@@ -144,13 +155,15 @@ export const useChatbotStore = defineStore('chatbot', () => {
 
       console.log(`Envoi vers endpoint: ${endpoint}`);
 
+      const recentMessages = messages.value.slice(-10).map(m => ({
+        role: m.role,
+        content: m.content,
+      }));
+
       const response = await $fetch(endpoint, {
         method: 'POST',
         body: {
-          messages: messages.value.map(m => ({
-            role: m.role,
-            content: m.content,
-          })),
+          messages: recentMessages,
           config: config.value,
           sessionId: sessionId.value,
           contextPage: contextPage.value,
@@ -303,9 +316,15 @@ export const useChatbotStore = defineStore('chatbot', () => {
     const config = useRuntimeConfig();
     const pgsBaseAPI = config.public.pgsBaseAPI;
 
-    // Vérifier la config et le nombre de messages
-    if (!pgsBaseAPI) return; // Pas d'API configurée
-    if (!messages.value || messages.value.length <= 2) return; // Moins de 3 messages, on ne sauvegarde pas
+    if (!pgsBaseAPI) return;
+    if (!messages.value || messages.value.length < 3) return;
+
+    const now = Date.now();
+    if (now - lastSaveTimestamp.value < saveThrottleDelay) {
+      return;
+    }
+
+    lastSaveTimestamp.value = now;
 
     try {
       await $fetch(`${pgsBaseAPI}/chatbot/conversations`, {
@@ -313,7 +332,7 @@ export const useChatbotStore = defineStore('chatbot', () => {
         body: {
           session_id: sessionId.value,
           context_page: contextPage.value,
-          messages: messages.value,
+          messages: messages.value.slice(-50),
         },
       });
     } catch (error) {
@@ -328,16 +347,17 @@ export const useChatbotStore = defineStore('chatbot', () => {
 
   // Réinitialiser la conversation
   const resetConversation = () => {
-    messages.value = [];
-    sessionId.value = '';
-    contextPage.value = '';
-
-    // Effacer localStorage
     try {
-      localStorage.removeItem(`noah_conversation_${contextPage.value}`);
+      if (contextPage.value) {
+        localStorage.removeItem(`noah_conversation_${contextPage.value}`);
+      }
     } catch (error) {
       console.error('Failed to clear localStorage:', error);
     }
+
+    messages.value = [];
+    sessionId.value = '';
+    contextPage.value = '';
   };
 
   return {
