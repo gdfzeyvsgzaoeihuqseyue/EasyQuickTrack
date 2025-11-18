@@ -59,7 +59,7 @@
             <div v-if="chatbotStore.messages.length === 0" class="text-center text-gray-500 mt-20">
               <IconSparkles class="w-12 h-12 mx-auto mb-4 text-primary-600" />
               <p class="font-semibold mb-2">Bonjour! Comment puis-je vous aider?</p>
-              <p class="text-sm">Posez-moi des questions sur SUITOPS HIRE PRO GESTION SOFT</p>
+              <p class="text-sm">Posez-moi des questions sur EASYQUICTTRACK PRO GESTION SOFT</p>
 
               <!-- Suggestions dynamiques -->
               <div class="mt-6 space-y-2">

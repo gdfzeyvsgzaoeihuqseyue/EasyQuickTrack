@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import ErrorPage from '~/components/ErrorPage.vue'
+import { SocialCustomLink, ErrorPage } from '@/components/utils';
 import { useSharedFiles } from '~/stores/sharedFiles'
 
 const sharedFiles = useSharedFiles()

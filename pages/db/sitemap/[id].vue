@@ -185,6 +185,7 @@ import {
   IconCheck, IconX, IconSitemap, IconCalendar, IconDownload
 } from '@tabler/icons-vue';
 import type { ShortLinkSitemap } from '@/types';
+import { AppNotification } from '@/components/app';
 
 definePageMeta({
   layout: 'dashboard'

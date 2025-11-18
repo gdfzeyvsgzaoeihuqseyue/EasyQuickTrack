@@ -152,7 +152,9 @@
 
 <script setup>
 import { ref } from 'vue';
-import { IconBrandFacebook, IconBrandLinkedin, IconBrandX, IconLoader2, IconMail, IconMapPin, IconMessage, IconSocial } from '@tabler/icons-vue';
+import { IconLoader2, IconMail, IconMapPin, IconMessage, IconSocial } from '@tabler/icons-vue';
+import { AppNotification } from '@/components/app';
+import { SocialCustomLink } from '@/components/utils';
 
 const form = ref({
   firstName: '',

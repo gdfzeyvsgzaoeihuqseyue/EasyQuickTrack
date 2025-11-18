@@ -37,7 +37,7 @@
                 <button @click="toggleProfileMenu"
                   class="btn-primary flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                   <IconUserCircle class="w-5 h-5 mr-2" />
-                  <span v-if="authStore.user">Bonjour, {{ authStore.user.firstName }}</span>
+                  <span v-if="authStore.user">Salut, {{ authStore.user.firstName }}</span>
                   <span v-else>Mon profil</span>
                   <IconChevronDown class="w-4 h-4 ml-2 transition-transform"
                     :class="{ 'rotate-180': profileMenuOpen }" />
@@ -69,11 +69,6 @@
                     class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
                     <IconLogout class="inline-block w-4 h-4 mr-2" /> Déconnexion
                   </button>
-                  <div class="border-t border-gray-100 my-1"></div>
-                  <NuxtLink to="/guest-link" @click="closeProfileMenu"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <IconAccessible class="inline-block w-4 h-4 mr-2" /> Lien public
-                  </NuxtLink>
                 </div>
               </div>
             </template>
@@ -104,7 +99,7 @@
             <button @click="toggleProfileMenu"
               class="block w-full text-left px-3 py-2 text-primary-600 font-medium flex items-center">
               <IconUserCircle class="w-5 h-5 mr-2" />
-              <span v-if="authStore.user">Bonjour, {{ authStore.user.firstName }}</span>
+              <span v-if="authStore.user">Salut, {{ authStore.user.firstName }}</span>
               <span v-else>Mon profil</span>
               <IconChevronDown class="w-4 h-4 ml-2 transition-transform" :class="{ 'rotate-180': profileMenuOpen }" />
             </button>
@@ -134,11 +129,6 @@
                 class="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md">
                 <IconLogout class="inline-block w-4 h-4 mr-2" /> Déconnexion
               </button>
-              <div class="border-t border-gray-100 my-1"></div>
-              <NuxtLink to="/guest-link" @click="closeMobileMenuAndProfileMenu"
-                class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
-                <IconAccessible class="inline-block w-4 h-4 mr-2" /> Lien public
-              </NuxtLink>
             </div>
           </div>
         </template>

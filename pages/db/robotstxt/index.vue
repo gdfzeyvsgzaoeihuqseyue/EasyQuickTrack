@@ -125,6 +125,7 @@ import { useRobotsTxtStore } from '~/stores/robotstxt';
 import { RobotsTxtItemCard, GenerateRobotsTxtModal, DeleteRobotsTxtModal } from '@/components/robotstxt';
 import { IconRefresh, IconPlus, IconSearch, IconLoader, IconAlertTriangle, IconFileText } from '@tabler/icons-vue';
 import type { GenerateRobotsTxtPayload, GenerateRobotsTxtResponse, RobotsTxtConfig } from '@/types';
+import { AppNotification } from '@/components/app';
 
 definePageMeta({
   layout: 'dashboard'

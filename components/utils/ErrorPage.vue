@@ -24,7 +24,7 @@
         <!-- Boutons -->
         <div class="flex flex-col sm:flex-row gap-4">
           <NuxtLink to="/"
-            class="flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-full shadow-md hover:bg-secondary-600 hover:scale-105 transition-transform duration-300">
+            class="flex items-center justify-center px-6 py-3 bg-primary text-white rounded-full shadow-md hover:bg-secondary hover:scale-105 transition-transform duration-300">
             <IconHome class="w-5 h-5 mr-2" />
             Aller à l'accueil
           </NuxtLink>
@@ -42,31 +42,31 @@
           </h3>
           <ul class="space-y-2 text-base">
             <li class="flex items-start">
-              <IconArrowRight class="text-primary-600 w-5 h-5 mr-2 mt-1" />
+              <IconArrowRight class="text-primary w-5 h-5 mr-2 mt-1" />
               <span>
                 Visiter notre
-                <NuxtLink to="/" class="text-primary-600 hover:underline">
+                <NuxtLink to="/" class="text-primary hover:underline">
                   page d'accueil
                 </NuxtLink>
               </span>
             </li>
             <li class="flex items-start">
-              <IconArrowRight class="text-primary-600 w-5 h-5 mr-2 mt-1" />
+              <IconArrowRight class="text-primary w-5 h-5 mr-2 mt-1" />
               Vérifier l'URL pour toute erreur de frappe.
             </li>
             <li class="flex items-start">
-              <IconArrowRight class="text-primary-600 w-5 h-5 mr-2 mt-1" />
+              <IconArrowRight class="text-primary w-5 h-5 mr-2 mt-1" />
               <span>
-                <NuxtLink to="/contact" class="text-primary-600 hover:underline">
+                <NuxtLink to="/contact" class="text-primary hover:underline">
                   Nous contacter
                 </NuxtLink>
                 si le problème persiste.
               </span>
             </li>
             <li class="flex items-start">
-              <IconArrowRight class="text-primary-600 w-5 h-5 mr-2 mt-1" />
+              <IconArrowRight class="text-primary w-5 h-5 mr-2 mt-1" />
               <span>
-                <NuxtLink to="/faq" class="text-primary-600 hover:underline">
+                <NuxtLink to="/faq" class="text-primary hover:underline">
                   Consulter notre FAQ
                 </NuxtLink>
                 pour les questions fréquentes.
@@ -110,7 +110,7 @@ const props = defineProps({
 const statusColor = computed(() => {
   switch (props.error.statusCode) {
     case 404:
-      return 'text-primary-600'
+      return 'text-primary'
     case 403:
       return 'text-red-600'
     case 500:

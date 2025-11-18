@@ -1,62 +1,41 @@
 export interface ChatSuggestion {
   text: string;
-  category: 'general' | 'candidate' | 'recruiter' | 'support' | 'technical';
+  category: 'general' | 'tools' | 'seo' | 'support' | 'technical';
 }
 
 export const chatSuggestions: ChatSuggestion[] = [
-  // Suggestions générales
-  { text: 'Qu’est-ce que SuitOps HIRE ?', category: 'general' },
-  { text: 'Quelle est la mission de SuitOps HIRE ?', category: 'general' },
-  { text: 'Pro Gestion Soft gère-t-elle d’autres plateformes RH ?', category: 'general' },
+  // Général
+  { text: 'Qu’est-ce qu’EasyQuickTrack ?', category: 'general' },
+  { text: 'Quels outils propose EasyQuickTrack ?', category: 'general' },
+  { text: 'Pro Gestion Soft gère-t-elle d’autres plateformes ?', category: 'general' },
+  { text: 'EasyQuickTrack est-il gratuit ?', category: 'general' },
 
+  // Outils et fonctionnalités
+  { text: 'Comment raccourcir une URL ?', category: 'tools' },
+  { text: 'Comment générer un QR Code ?', category: 'tools' },
+  { text: 'Comment suivre les statistiques de mes liens ?', category: 'tools' },
+  { text: 'Comment analyser la performance d’un site ?', category: 'tools' },
+  { text: 'Comment créer un sitemap avec EasyQuickTrack ?', category: 'tools' },
+  { text: 'Comment configurer un fichier robots.txt ?', category: 'tools' },
+  { text: 'Comment extraire des contacts à partir d’une page web ?', category: 'tools' },
 
-  // Recruteurs
-  { text: 'En quoi HIRE peut aider mon entreprise ?', category: 'recruiter' },
-  { text: 'Comment créer un compte recruteur ?', category: 'recruiter' },
-  { text: 'Comment publier une offre d’emploi ?', category: 'recruiter' },
-  { text: 'Comment gérer les candidatures ?', category: 'recruiter' },
-  { text: 'Puis-je organiser des entretiens directement sur la plateforme ?', category: 'recruiter' },
-  { text: 'SuitOps HIRE permet-il le tri automatique des CV ?', category: 'recruiter' },
-  { text: 'Puis-je personnaliser le processus de recrutement ?', category: 'recruiter' },
-  { text: 'Comment fonctionne le tableau de bord recruteur ?', category: 'recruiter' },
-  { text: 'SuitOps HIRE est-il compatible avec SuitOps RH ?', category: 'recruiter' },
+  // SEO
+  { text: 'Comment optimiser mon SEO avec les outils d’EasyQuickTrack ?', category: 'seo' },
+  { text: 'À quoi sert le fichier robots.txt ?', category: 'seo' },
+  { text: 'Pourquoi utiliser un sitemap ?', category: 'seo' },
+  { text: 'Comment vérifier la vitesse de mon site ?', category: 'seo' },
 
-  // Suggestions de support
-  { text: 'J’ai un problème pour me connecter à mon compte HIRE', category: 'support' },
-  { text: 'Comment contacter l’équipe d’assistance ?', category: 'support' },
-  { text: 'Proposez-vous une formation à l’utilisation de HIRE ?', category: 'support' },
-  { text: 'Où trouver la documentation utilisateur ?', category: 'support' },
-  { text: 'Comment signaler un bug ou une erreur sur une offre ?', category: 'support' },
+  // Support
+  { text: 'J’ai un problème pour accéder à un outil', category: 'support' },
+  { text: 'Comment contacter l’équipe EasyQuickTrack ?', category: 'support' },
+  { text: 'Où trouver la documentation ?', category: 'support' },
+  { text: 'Comment signaler un bug ?', category: 'support' },
 
-  // Suggestions techniques
-  { text: 'Comment intégrer HIRE à mon site carrière ?', category: 'technical' },
-  { text: 'Disposez-vous d’une API pour la gestion des candidatures ?', category: 'technical' },
-  { text: 'Comment automatiser l’envoi d’emails aux candidats ?', category: 'technical' },
-  { text: 'Puis-je connecter HIRE à mes outils RH existants ?', category: 'technical' },
-  { text: 'Afficher les dernières actualités sur le recrutement digital en Afrique', category: 'technical' },
-
-  // Suggestions côté candidats
-  { text: 'Comment créer mon profil candidat ?', category: 'candidate' },
-  { text: 'Comment postuler à une offre sur SuitOps HIRE ?', category: 'candidate' },
-  { text: 'Puis-je importer mon CV ou mon profil LinkedIn ?', category: 'candidate' },
-  { text: 'Comment suivre l’évolution de ma candidature ?', category: 'candidate' },
-  { text: 'Comment modifier ou supprimer ma candidature ?', category: 'candidate' },
-  { text: 'Puis-je recevoir des alertes d’emploi selon mon profil ?', category: 'candidate' },
-  { text: 'Est-ce que les recruteurs voient toutes mes informations personnelles ?', category: 'candidate' },
-  { text: 'Comment préparer un entretien via la plateforme ?', category: 'candidate' },
-  { text: 'Que faire si je ne reçois pas de réponse à ma candidature ?', category: 'candidate' },
-  { text: 'Comment mettre en valeur mes compétences sur mon profil ?', category: 'candidate' },
-  { text: 'Puis-je enregistrer des offres pour plus tard ?', category: 'candidate' },
-  { text: 'Comment savoir si mon CV a été consulté ?', category: 'candidate' },
-  { text: 'Y a-t-il des tests ou évaluations sur SuitOps HIRE ?', category: 'candidate' },
-  { text: 'Comment garantir la confidentialité de mes données ?', category: 'candidate' },
-  { text: 'Puis-je être recommandé à une entreprise ?', category: 'candidate' },
-  { text: 'Comment contacter un recruteur via SuitOps HIRE ?', category: 'candidate' },
-  { text: 'Comment participer à des campagnes de recrutement ?', category: 'candidate' },
-  { text: 'Est-ce que HIRE est gratuit pour les candidats ?', category: 'candidate' },
-  { text: 'Puis-je accéder à mes anciennes candidatures ?', category: 'candidate' },
-  { text: 'Comment supprimer mon compte candidat ?', category: 'candidate' }
-
+  // Technique
+  { text: 'Disposez-vous d’une API pour raccourcir les URLs ?', category: 'technical' },
+  { text: 'Comment intégrer EasyQuickTrack dans mon application ?', category: 'technical' },
+  { text: 'Puis-je automatiser la création de QR Codes ?', category: 'technical' },
+  { text: 'Comment sécurisez-vous les données analysées ?', category: 'technical' }
 ];
 
 /**

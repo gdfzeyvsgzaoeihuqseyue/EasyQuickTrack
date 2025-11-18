@@ -166,7 +166,7 @@ import { ref, onMounted } from 'vue';
 import { usePageSpeedStore } from '~/stores/pageSpeed';
 import { IconLoader2, IconCopy, IconDownload, IconX } from '@tabler/icons-vue';
 import type { PageSpeedResult, PageSpeedMetric } from '~/types';
-import AppNotification from '~/components/AppNotification.vue';
+import { AppNotification } from '@/components/app';
 
 const props = defineProps<{
   initialUrl?: string;

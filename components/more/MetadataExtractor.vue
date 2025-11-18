@@ -129,7 +129,7 @@ import { ref } from 'vue';
 import { useApiFetch } from '~/utils/api';
 import { IconLoader2, IconCopy, IconDownload } from '@tabler/icons-vue';
 import type { LinkMetadata, ExtractMetadataResponse } from '~/types';
-import AppNotification from '~/components/AppNotification.vue';
+import { AppNotification } from '@/components/app';
 
 const url = ref('');
 const loading = ref(false);

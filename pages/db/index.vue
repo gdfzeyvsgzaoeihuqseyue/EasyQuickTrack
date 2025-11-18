@@ -174,6 +174,7 @@ import { GenerateSitemapModal } from '@/components/sitemap';
 import { GenerateRobotsTxtModal } from '@/components/robotstxt';
 import { RecentsLinks, RecentsQrCode, RecentsSitemap, RecentsRobottxt } from '@/components/dashboard';
 import type { SitemapGenerationOptions, GenerateSitemapResponse, GenerateRobotsTxtPayload, GenerateRobotsTxtResponse } from '~/types';
+import { AppNotification } from '@/components/app';
 
 definePageMeta({
   layout: 'dashboard'

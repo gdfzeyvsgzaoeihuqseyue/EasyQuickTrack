@@ -66,6 +66,7 @@
 <script setup lang="ts">
 import { NuxtLink } from '#components'
 import { useSharedFiles } from '~/stores/sharedFiles';
+import { SocialCustomLink } from '@/components/utils';
 
 const sharedFiles = useSharedFiles();
 

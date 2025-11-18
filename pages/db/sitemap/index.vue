@@ -121,6 +121,7 @@ import { useSitemapStore } from '~/stores/sitemap';
 import { SitemapItemCard, GenerateSitemapModal, DeleteSitemapModal } from '@/components/sitemap';
 import { IconRefresh, IconPlus, IconSearch, IconLoader, IconAlertTriangle, IconSitemap } from '@tabler/icons-vue';
 import type { SitemapGenerationOptions, GenerateSitemapResponse, ShortLinkSitemap } from '@/types';
+import { AppNotification } from '@/components/app';
 
 definePageMeta({
   layout: 'dashboard'

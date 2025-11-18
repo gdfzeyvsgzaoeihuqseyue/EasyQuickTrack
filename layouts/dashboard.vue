@@ -293,7 +293,7 @@
       </div>
 
       <!-- Notifications -->
-      <SiteNotificationManager />
+      <NotificationManager />
 
       <main class="flex-1 overflow-auto">
         <div class="p-6">
@@ -302,7 +302,7 @@
       </main>
     </div>
 
-    <GlobalFeedbackButton />
+    <FeedbackButton />
   </div>
 </template>
 
@@ -316,6 +316,7 @@ import {
   IconUserCircle, IconChevronDown, IconLogout, IconFilterStar
 } from '@tabler/icons-vue'
 import { useSharedFiles } from '~/stores/sharedFiles';
+import { NotificationManager, FeedbackButton } from '@/components/utils';
 
 const sharedFiles = useSharedFiles();
 const route = useRoute()

@@ -256,7 +256,7 @@
 import { reactive, watch, onMounted } from 'vue';
 import { useSocialsContactsStore } from '~/stores/socialsContacts';
 import { IconLoader2, IconCopy, IconDownload, IconX } from '@tabler/icons-vue';
-import AppNotification from '~/components/AppNotification.vue';
+import { AppNotification } from '@/components/app';
 
 const props = defineProps<{
   initialUrl?: string;

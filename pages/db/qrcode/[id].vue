@@ -226,6 +226,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useQRCodeStore } from '~/stores/qrcode';
 import { IconAlertTriangle, IconChevronLeft, IconCopy, IconDownload, IconEdit, IconLoader, IconPlus, IconShare, IconTrash, IconInfoCircle } from '@tabler/icons-vue';
 import { DeleteQRCodeModal, EditQRCodeModal } from '@/components/qrcode'
+import { AppNotification } from '@/components/app';
 
 definePageMeta({
   layout: 'dashboard'

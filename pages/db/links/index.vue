@@ -995,6 +995,7 @@ import { useLinksStore } from '~/stores/links';
 import type { ShortLink } from '~/types';
 import { IconInfoCircle, IconCalendar, IconCircleCheck, IconClick, IconCopy, IconEdit, IconHandClick, IconChartBar, IconQrcode, IconLayoutGrid, IconLayoutList, IconLink, IconLoader, IconPlus, IconRefresh, IconSearch, IconTrash, IconTrendingUp } from '@tabler/icons-vue'
 import { BulkDeleteLinkModal, CreateLinkModal, DeleteLinkModal, EditLinkModal } from '@/components/link'
+import { AppNotification } from '@/components/app';
 
 definePageMeta({
   layout: 'dashboard'

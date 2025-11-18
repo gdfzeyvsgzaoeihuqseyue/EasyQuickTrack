@@ -7,9 +7,7 @@
       </div>
 
       <!-- Loading State -->
-      <div v-if="profileStore.loading" class="flex justify-center items-center py-12">
-        <IconLoader2 class="animate-spin h-10 w-10 text-primary-600" />
-      </div>
+      <LogoLoader v-if="profileStore.loading" :show-text="true" size="lg" text="Chargement des informations du profil..." />
 
       <!-- Error State -->
       <div v-if="profileStore.error" class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-md mb-6">
@@ -172,7 +170,8 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
 import { useUserProfileStore } from '~/stores/userProfile';
 import { useUserServiceStore } from '~/stores/userService';
-import { IconLoader2, IconLock, IconAlertTriangle, IconLoader } from '@tabler/icons-vue'
+import { LogoLoader } from '@/components/utils';
+import { IconLock, IconAlertTriangle, IconLoader } from '@tabler/icons-vue'
 
 definePageMeta({
   layout: 'dashboard',

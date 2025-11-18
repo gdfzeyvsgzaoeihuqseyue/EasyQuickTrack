@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { onMounted, computed, ref, watch } from 'vue';
 import { useSiteInfoStore } from '@/stores/siteInfo';
-import NotificationItem from '@/components/NotificationItem.vue'; 
+import { NotificationItem } from '@/components/utils';
 import type { SiteInfo } from '@/types';
 
 const siteInfoStore = useSiteInfoStore();

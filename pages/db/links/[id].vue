@@ -126,6 +126,7 @@ import { IconAlertTriangle, IconChevronLeft, IconLoader, IconMail, IconGauge, Ic
 import type { GenerateSitemapResponse, SitemapGenerationOptions, GenerateRobotsTxtPayload, GenerateRobotsTxtResponse, RobotsTxtConfig, ShortLinkSitemap } from '@/types';
 import type { ShortLink } from '~/types';
 import type { QRCodeRecord } from '~/stores/qrcode';
+import { AppNotification } from '@/components/app';
 
 definePageMeta({
   layout: 'dashboard'

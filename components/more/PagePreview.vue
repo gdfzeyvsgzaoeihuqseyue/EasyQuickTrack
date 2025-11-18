@@ -239,7 +239,7 @@
 import { ref, computed, watch, nextTick, onMounted } from 'vue';
 import { IconLoader2, IconDownload, IconCopy, IconDeviceDesktop, IconDeviceTablet, IconDeviceMobile, IconSettings, IconX } from '@tabler/icons-vue';
 import html2canvas from 'html2canvas';
-import AppNotification from '~/components/AppNotification.vue';
+import { AppNotification } from '@/components/app';
 
 // Etat
 const props = defineProps<{

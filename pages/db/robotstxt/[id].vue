@@ -123,6 +123,7 @@ import {
   IconEdit, IconDownload
 } from '@tabler/icons-vue';
 import type { RobotsTxtConfig, GenerateRobotsTxtPayload } from '@/types';
+import { AppNotification } from '@/components/app';
 
 definePageMeta({
   layout: 'dashboard'
