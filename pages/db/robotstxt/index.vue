@@ -67,11 +67,13 @@
       <div v-else-if="filteredConfigs.length === 0" class="text-center py-12">
         <IconFileText class="w-16 h-16 text-gray-300 mx-auto mb-4" />
         <h3 class="text-lg font-medium text-gray-900 mb-2">
-          {{ searchQuery || dateFilter !== 'all' || hasSitemapUrlFilter !== 'all' || userAgentSearchQuery ? 'Aucun résultat trouvé' : 'Aucune configuration robots.txt trouvée' }}
+          {{ searchQuery || dateFilter !== 'all' || hasSitemapUrlFilter !== 'all' || userAgentSearchQuery ? 'Aucun
+          résultat trouvé' : 'Aucune configuration robots.txt trouvée' }}
         </h3>
         <p class="text-gray-500 mb-4">
-          {{ searchQuery || dateFilter !== 'all' || hasSitemapUrlFilter !== 'all' || userAgentSearchQuery ? 'Essayez de modifier vos critères de recherche'
-            : 'Commencez par générer votre première configuration robots.txt' }}
+          {{ searchQuery || dateFilter !== 'all' || hasSitemapUrlFilter !== 'all' || userAgentSearchQuery ? 'Essayez de
+          modifier vos critères de recherche'
+          : 'Commencez par générer votre première configuration robots.txt' }}
         </p>
         <button @click="openGenerateModal" class="btn-primary">
           Générer un robots.txt
@@ -294,4 +296,3 @@ useSeoMeta({
   robots: 'noindex, nofollow'
 });
 </script>
-

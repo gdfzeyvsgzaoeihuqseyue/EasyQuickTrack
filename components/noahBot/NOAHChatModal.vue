@@ -296,10 +296,6 @@ const handleEdit = async (messageId: string, newContent: string) => {
   }
 };
 
-const handleReset = () => {
-  showResetConfirmation.value = true;
-};
-
 const confirmReset = () => {
   showResetConfirmation.value = false;
 

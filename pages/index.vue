@@ -235,5 +235,9 @@ const features = [
   },
 ];
 
-usePageSeo('index')
+// SEO
+useSeoMeta({
+  title: 'Easy Quick Track - Votre solution complète pour le web.',
+  robots: 'index, follow',
+})
 </script>

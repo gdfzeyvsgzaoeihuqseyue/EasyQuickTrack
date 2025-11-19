@@ -323,5 +323,9 @@ const handleGenerateRobotsTxt = async (payload: GenerateRobotsTxtPayload) => {
 };
 
 // SEO
-usePageSeo('dashboard')
+useSeoMeta({
+  title: 'Tableau de bord',
+  description: 'Gérez et analysez vos liens raccourcis.',
+  robots: 'index, follow',
+})
 </script>
