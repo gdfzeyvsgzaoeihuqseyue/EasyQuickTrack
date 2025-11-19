@@ -107,7 +107,7 @@
             </form>
             <div class="mt-2 flex justify-between items-center text-xs text-gray-500">
               <span>{{ getInputHint() }}</span>
-              <button @click="showResetConfirmation = true" class="hover:text-primary-600 transition">
+              <button @click="showResetConfirmation = true" title="Restaurer la conversation" class="hover:text-primary-600 transition">
                 <IconRestore class="w-4 h-4" />
               </button>
             </div>
