@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: false },
-  
+
   modules: [
     ['nuxt-gtag', {
       id: process.env.GTAG_ID || 'G-Q5D4X1QWPK',
@@ -14,12 +14,12 @@ export default defineNuxtConfig({
     '@nuxtjs/robots',
     '@nuxtjs/sitemap',
   ],
-  
+
   site: {
     url: 'https://eqt.netlify.app',
     name: 'Easy Quick Track',
   },
-  
+
   sitemap: {
     xslColumns: [
       { label: 'URL', width: '50%' },
@@ -29,24 +29,27 @@ export default defineNuxtConfig({
       { label: 'Hreflangs', select: 'count(xhtml:link)', width: '25%' },
     ],
   },
-  
+
   css: ['~/assets/css/main.css'],
-  
+
   runtimeConfig: {
     mistralApiKey: process.env.NOAH_MISTRAL_KEY,
     geminiApiKey: process.env.NOAH_GEMINI_KEY,
-    
+
     serviceId: process.env.SERVICE_ID,
     serviceApiKey: process.env.SERVICE_API_KEY,
-    
+
     public: {
       pgsBaseAPI: process.env.PGS_API_URL,
       pgsSharedFiles: process.env.PGS_SHARED_FILES,
       betaMode: process.env.BETA_MODE === 'true',
       siteIdentifier: process.env.SITE_IDENTIFIER || 'eqt',
+      serviceId: process.env.SERVICE_ID,
+      ssoUrl: process.env.SSO_URL,
+      serviceDomain: process.env.SERVICE_DOMAIN,
     }
   },
-  
+
   googleFonts: {
     display: 'swap',
     families: {
@@ -56,7 +59,7 @@ export default defineNuxtConfig({
       'Space+Mono': [400, 700],
     }
   },
-  
+
   app: {
     head: {
       title: 'EasyQuickTrack - Votre solution complète pour le web. Raccourcissez vos URLs, générez des QR codes, analysez les métadonnées de pages, sitemaps, robots.txt et plus encore pour booster votre SEO.',
@@ -73,7 +76,7 @@ export default defineNuxtConfig({
       ]
     }
   },
-  
+
   // Nitro pour le proxy et les cookies
   // nitro: {
   //   devProxy: {
@@ -84,7 +87,12 @@ export default defineNuxtConfig({
   //     }
   //   }
   // },
-  
+
+  typescript: {
+    strict: true,
+    typeCheck: true
+  },
+
   // Routage pour les cookies
   router: {
     options: {

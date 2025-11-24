@@ -7,7 +7,8 @@
       </div>
 
       <!-- Loading State -->
-      <LogoLoader v-if="profileStore.loading" :show-text="true" size="lg" text="Chargement des informations du profil..." />
+      <LogoLoader v-if="profileStore.loading" :show-text="true" size="lg"
+        text="Chargement des informations du profil..." />
 
       <!-- Error State -->
       <div v-if="profileStore.error" class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-md mb-6">
@@ -96,10 +97,7 @@
               </div>
             </div>
 
-            <button @click="showRevokeModal = true" :disabled="userServiceStore.loading"
-              class="ml-4 px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium">
-              Révoquer l'accès
-            </button>
+
           </div>
         </div>
       </div>
@@ -114,53 +112,7 @@
       </div>
     </div>
 
-    <!-- Modal de confirmation de révocation -->
-    <div v-if="showRevokeModal" class="fixed inset-0 z-50 overflow-y-auto">
-      <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" @click="showRevokeModal = false"></div>
 
-        <div
-          class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-          <div class="sm:flex sm:items-start">
-            <div
-              class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-              <IconAlertTriangle class="h-6 w-6 text-red-600" />
-            </div>
-            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">
-                Révoquer l'accès au service
-              </h3>
-              <div class="mt-2">
-                <p class="text-sm text-gray-500">
-                  Êtes-vous sûr de vouloir révoquer votre accès au service EQT.me ? Vous serez déconnecté immédiatement
-                  et redirigé vers la page d'accueil.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="userServiceStore.error"
-            class="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
-            {{ userServiceStore.error }}
-          </div>
-
-          <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-            <button @click="handleRevokeAccess" :disabled="userServiceStore.loading" type="button"
-              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed">
-              <span v-if="userServiceStore.loading" class="flex items-center">
-                <IconLoader class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" />
-                Révocation...
-              </span>
-              <span v-else>Confirmer la révocation</span>
-            </button>
-            <button @click="showRevokeModal = false" :disabled="userServiceStore.loading" type="button"
-              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed">
-              Annuler
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -169,7 +121,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
 import { useUserProfileStore } from '~/stores/userProfile';
-import { useUserServiceStore } from '~/stores/userService';
+
 import { LogoLoader } from '@/components/utils';
 import { IconLock, IconAlertTriangle, IconLoader } from '@tabler/icons-vue'
 
@@ -180,10 +132,6 @@ definePageMeta({
 
 const authStore = useAuthStore();
 const profileStore = useUserProfileStore();
-const userServiceStore = useUserServiceStore();
-const router = useRouter();
-const showRevokeModal = ref(false);
-
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return date.toLocaleString('fr-FR', {
@@ -193,27 +141,6 @@ const formatDate = (dateString: string) => {
     hour: '2-digit',
     minute: '2-digit',
   });
-};
-
-const handleRevokeAccess = async () => {
-  if (!authStore.user || !profileStore.eqtMeService) {
-    return;
-  }
-
-  try {
-    await userServiceStore.revokeAccess({
-      userId: authStore.user.id,
-      serviceId: profileStore.eqtMeService.serviceId,
-    });
-
-    showRevokeModal.value = false;
-
-    // Déconnexion et redirection vers la page d'accueil
-    await authStore.logout();
-    router.push('/');
-  } catch (err) {
-    console.error('Erreur lors de la révocation:', err);
-  }
 };
 
 onMounted(async () => {

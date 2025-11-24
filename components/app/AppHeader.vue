@@ -148,6 +148,7 @@ const config = useRuntimeConfig();
 const sharedFiles = useSharedFiles();
 const authStore = useAuthStore();
 const router = useRouter();
+const { getSSOUrl } = useSSO();
 
 const mobileMenuOpen = ref(false);
 const profileMenuOpen = ref(false);
@@ -170,7 +171,7 @@ const computedNavItems = computed(() => {
       { label: 'À propos', to: '/about' },
       { label: 'Contact', to: '/contact' },
       { label: 'Lien public', to: '/guest-link' },
-      { label: 'Se connecter', to: '/auth/login', isButton: true }
+      { label: 'Se connecter', to: getSSOUrl('login'), isButton: true }
     ];
   }
 });
@@ -201,7 +202,7 @@ const closeMobileMenuAndProfileMenu = () => {
 
 const handleLogoutAndCloseMenu = async () => {
   await authStore.logout();
-  router.push('/auth/login');
+  router.push('/');
   closeMobileMenuAndProfileMenu();
 };
 

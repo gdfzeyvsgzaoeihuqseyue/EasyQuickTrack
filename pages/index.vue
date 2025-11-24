@@ -160,13 +160,9 @@ const router = useRouter();
 
 const handleGetStarted = async () => {
   if (authStore.isLoggedIn) {
-    if (authStore.hasEqtMeAccess) {
-      router.push('/db');
-    } else {
-      router.push('/auth/grant-access');
-    }
+    router.push('/db');
   } else {
-    router.push('/auth/login');
+    router.push('/');
   }
 };
 

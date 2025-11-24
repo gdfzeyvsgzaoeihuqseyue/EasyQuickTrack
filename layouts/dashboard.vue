@@ -393,7 +393,7 @@ const closeSidebarAndProfileMenu = () => {
 
 const handleLogout = async () => {
   await authStore.logout();
-  router.push('/auth/login');
+  router.push('/');
   closeSidebarAndProfileMenu();
 };
 </script>
