@@ -71,7 +71,7 @@ const recentLinks = computed(() => {
 });
 
 const fetchShortLinks = async () => {
-  await linksStore.fetchLinks();
+  await linksStore.fetchUserLinks();
   if (!linksStore.error) {
     emit('show-floating-notification', 'Liste des liens actualisée !', 'success');
   }

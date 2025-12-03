@@ -5,24 +5,23 @@ export const useSSO = () => {
     const ssoBase = config.public.ssoUrl as string
     const serviceDomain = config.public.serviceDomain as string
 
-    // Construct the base URL for SSO
+    // Constuction de l'URL de base
     const url = new URL(`${ssoBase}/auth/authorize`)
 
-    // Add required parameters
+    // Paramètres
     url.searchParams.set('serviceId', String(config.public.serviceId))
     url.searchParams.set('action', action)
 
-    // Determine return URL
+    // URL de retour
     if (returnUrl) {
       url.searchParams.set('returnUrl', returnUrl)
     } else {
-      // Default to serviceDomain/db as requested
       if (serviceDomain) {
-        // Remove trailing slash from serviceDomain if present to avoid double slashes
+        // Retrait d'un slash si l'url se termine par '/'
         const domain = serviceDomain.endsWith('/') ? serviceDomain.slice(0, -1) : serviceDomain
         url.searchParams.set('returnUrl', `${domain}/db`)
       } else if (process.client) {
-        // Fallback to current location if serviceDomain is missing
+        // Retour à la page actuelle si le serviceDomain est manquant
         url.searchParams.set('returnUrl', window.location.href)
       }
     }

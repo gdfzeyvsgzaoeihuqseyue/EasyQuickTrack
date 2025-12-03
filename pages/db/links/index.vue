@@ -400,7 +400,7 @@ watch(() => linksStore.error, (newError) => {
 
 // Récupérer les données 
 onMounted(async () => {
-  await linksStore.fetchLinks();
+  await linksStore.fetchUserLinks();
 });
 
 // Computed properties
@@ -475,20 +475,20 @@ const closeCreateLinkModal = () => {
 };
 
 const handleLinkCreatedAndRefresh = async () => {
-  await linksStore.fetchLinks();
+  await linksStore.fetchUserLinks();
 };
 
 
 // Actions
 const refreshLinks = async () => {
-  await linksStore.fetchLinks();
+  await linksStore.fetchUserLinks();
   if (!linksStore.error) {
     showFloatingNotification('Liste de liens actualisée !', 'success');
   }
 };
 
 const changePage = async (page: number) => {
-  await linksStore.fetchLinks(page);
+  await linksStore.fetchUserLinks(page);
 };
 
 const formatDate = (dateString: string | number) => {
@@ -601,7 +601,7 @@ const confirmBulkDelete = async () => {
 
   showBulkDeleteModal.value = false;
   selectedLinks.value = [];
-  await linksStore.fetchLinks();
+  await linksStore.fetchUserLinks();
 
   if (successCount > 0) {
     showFloatingNotification(`${successCount} lien(s) supprimé(s) avec succès !`, 'success');

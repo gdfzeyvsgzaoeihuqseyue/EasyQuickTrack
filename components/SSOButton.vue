@@ -1,26 +1,20 @@
 <template>
-  <component
-    :is="tag"
-    :href="tag === 'a' ? ssoUrl : undefined"
-    :class="buttonClass"
+  <component :is="tag" :href="tag === 'a' ? ssoUrl : undefined" :class="buttonClass"
     class="inline-flex items-center justify-center space-x-2 transition-all cursor-pointer"
-    @click="tag === 'button' ? handleClick : undefined"
-  >
-    <svg v-if="showIcon && iconPosition === 'left'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-    </svg>
-    
+    @click="tag === 'button' ? handleClick : undefined">
+    <IconShieldCheck v-if="showIcon && iconPosition === 'left'" class="w-5 h-5" />
+
     <slot>
       <span>{{ defaultText }}</span>
     </slot>
-    
-    <svg v-if="showIcon && iconPosition === 'right'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-    </svg>
+
+    <IconArrowRight v-if="showIcon && iconPosition === 'right'" class="w-4 h-4" />
   </component>
 </template>
 
 <script setup lang="ts">
+import { IconArrowRight, IconShieldCheck } from '@tabler/icons-vue'
+
 interface Props {
   serviceId?: string
   action?: 'login' | 'register'
@@ -41,8 +35,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const defaultText = computed(() => {
-  return props.action === 'login' 
-    ? 'Se connecter avec PGS SSO' 
+  return props.action === 'login'
+    ? 'Se connecter avec PGS SSO'
     : 'S\'inscrire avec PGS SSO'
 })
 

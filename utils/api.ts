@@ -4,6 +4,9 @@ import { $fetch, type FetchOptions } from 'ofetch';
 export function useApiFetch<T = any>(endpoint: string, options: FetchOptions<'json'> = {}) {
   const config = useRuntimeConfig();
   const baseUrl = config.public.pgsBaseAPI;
-  
-  return $fetch<T>(`${baseUrl}${endpoint}`, options);
+
+  return $fetch<T>(`${baseUrl}${endpoint}`, {
+    credentials: 'include',
+    ...options
+  });
 }

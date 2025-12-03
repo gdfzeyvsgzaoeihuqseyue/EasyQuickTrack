@@ -32,10 +32,10 @@
               </p>
 
               <div class="mt-4 pt-3 border-t border-gray-100 flex space-x-4 justify-center">
-                <NuxtLink to="/auth/login"
+                <a :href="loginUrl"
                   class="font-semibold text-primary-600 hover:text-primary-800 transition-colors flex items-center">
                   <span class="underline">Connectez-vous</span>
-                </NuxtLink>
+                </a>
 
                 <span class="text-gray-300">|</span>
 
@@ -124,9 +124,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useLinksStore } from '~/stores/links'
 import { IconLoader2, IconInfoCircle, IconKey, IconChartBar } from '@tabler/icons-vue'
+
+const { getSSOUrl } = useSSO()
+const loginUrl = computed(() => getSSOUrl('login'))
 
 const linksStore = useLinksStore()
 
@@ -142,7 +145,7 @@ const shortenUrl = async () => {
   linksStore.clearError()
   showResult.value = false
 
-  const result = await linksStore.createGuestShortLink(longUrl.value)
+  const result = await linksStore.createPublicLink(longUrl.value)
 
   if (result) {
     shortLink.value = result.link

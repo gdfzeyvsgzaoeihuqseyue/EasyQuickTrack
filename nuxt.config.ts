@@ -36,14 +36,11 @@ export default defineNuxtConfig({
     mistralApiKey: process.env.NOAH_MISTRAL_KEY,
     geminiApiKey: process.env.NOAH_GEMINI_KEY,
 
-    serviceId: process.env.SERVICE_ID,
-    serviceApiKey: process.env.SERVICE_API_KEY,
-
     public: {
       pgsBaseAPI: process.env.PGS_API_URL,
       pgsSharedFiles: process.env.PGS_SHARED_FILES,
       betaMode: process.env.BETA_MODE === 'true',
-      siteIdentifier: process.env.SITE_IDENTIFIER || 'eqt',
+      siteIdentifier: process.env.SITE_IDENTIFIER,
       serviceId: process.env.SERVICE_ID,
       ssoUrl: process.env.SSO_URL,
       serviceDomain: process.env.SERVICE_DOMAIN,
@@ -77,26 +74,8 @@ export default defineNuxtConfig({
     }
   },
 
-  // Nitro pour le proxy et les cookies
-  // nitro: {
-  //   devProxy: {
-  //     '/api': {
-  //       target: process.env.PGS_API_URL,
-  //       changeOrigin: true,
-  //       cookieDomainRewrite: '',
-  //     }
-  //   }
-  // },
-
   typescript: {
     strict: true,
     typeCheck: true
   },
-
-  // Routage pour les cookies
-  router: {
-    options: {
-      strict: false
-    }
-  }
 })

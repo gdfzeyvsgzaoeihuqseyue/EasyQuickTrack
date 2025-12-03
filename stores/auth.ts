@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import type { User, Service, LoginResponse, RegisterResponse, RegisterInput, LoginInput } from '@/types';
+import type { User, Service } from '@/types';
 
 export const useAuthStore = defineStore('auth', () => {
   const config = useRuntimeConfig();
@@ -15,64 +15,6 @@ export const useAuthStore = defineStore('auth', () => {
   let refreshInterval: NodeJS.Timeout | null = null;
 
   const isLoggedIn = computed(() => !!user.value);
-
-  const hasEqtMeAccess = computed(() => {
-    const eqtService = services.value.find(service => service.domain === 'https://eqt.me');
-    return eqtService ? (eqtService.isActive === true || eqtService.isActive === undefined) : false;
-  });
-
-  const login = async (credentials: LoginInput) => {
-    loading.value = true;
-    error.value = null;
-
-    try {
-      const response = await $fetch<LoginResponse>(`${apiUrl}/user/auth/login`, {
-        method: 'POST',
-        body: credentials,
-        credentials: 'include',
-      });
-
-      user.value = response.user;
-      services.value = response.services.map(s => ({
-        serviceId: s.serviceId,
-        serviceName: s.serviceName,
-        domain: s.domain,
-        role: s.role as 'user' | 'admin' | 'moderator',
-        permissions: s.permissions,
-        lastAccess: s.lastAccess,
-        isActive: s.isActive !== undefined ? s.isActive : true
-      }));
-
-      // Démarrer le rafraîchissement automatique
-      startTokenRefresh();
-
-      return response;
-    } catch (err: any) {
-      error.value = err.data?.message || 'Erreur de connexion';
-      throw err;
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const register = async (data: RegisterInput) => {
-    loading.value = true;
-    error.value = null;
-
-    try {
-      const response = await $fetch<RegisterResponse>(`${apiUrl}/user/auth/register`, {
-        method: 'POST',
-        body: data,
-      });
-
-      return response;
-    } catch (err: any) {
-      error.value = err.data?.message || 'Erreur d\'inscription';
-      throw err;
-    } finally {
-      loading.value = false;
-    }
-  };
 
   const logout = async () => {
     loading.value = true;
@@ -139,10 +81,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  const updateServices = (newServices: Service[]) => {
-    services.value = newServices;
-  };
-
   // Récupérer la session depuis le serveur (basée sur les cookies)
   const fetchSession = async () => {
     if (sessionChecked.value) {
@@ -196,15 +134,11 @@ export const useAuthStore = defineStore('auth', () => {
     user: computed(() => user.value),
     services: computed(() => services.value),
     isLoggedIn,
-    hasEqtMeAccess,
     loading: computed(() => loading.value),
     error: computed(() => error.value),
     sessionChecked: computed(() => sessionChecked.value),
-    login,
-    register,
     logout,
     refreshAccessToken,
-    updateServices,
     fetchSession,
     initAuth,
   };

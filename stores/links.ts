@@ -22,12 +22,14 @@ export const useLinksStore = defineStore('links', () => {
   })
 
   // Actions
-  const createShortLink = async (longUrl: string, alias?: string, activateAt?: string, expiresAt?: string): Promise<ShortLink | null> => {
+
+  // Créer un lien en tant qu'utilisateur authentifié
+  const createUserLink = async (longUrl: string, alias?: string, activateAt?: string, expiresAt?: string): Promise<ShortLink | null> => {
     loading.value = true
     error.value = null
 
     try {
-      const response = await useApiFetch<CreateLinkResponse>('/eqt/link', {
+      const response = await useApiFetch<CreateLinkResponse>('/eqt/link/user', {
         method: 'POST',
         body: { longUrl, alias, activateAt, expiresAt }
       });
@@ -43,27 +45,54 @@ export const useLinksStore = defineStore('links', () => {
 
       return newLink
     } catch (err: any) {
-      console.error('Erreur lors de la création du lien:', err)
-      if (err.status === 409 && err.data?.message?.includes('alias')) {
-        error.value = err.data?.message || 'L\'alias fourni est déjà utilisé.';
-      } else if (err.status === 400 && err.data?.message?.includes('date')) {
-        error.value = err.data?.message || 'Dates d\'activation/expiration invalides.';
-      } else {
-        error.value = err.data?.message || 'Une erreur est survenue lors de la création du lien';
-      }
+      console.error('Erreur lors de la création du lien utilisateur:', err)
+      error.value = err.data?.message || 'Erreur lors de la création de votre lien court'
       return null
     } finally {
       loading.value = false
     }
   }
 
-  const fetchLinks = async (page: number = 1, limit: number = 10): Promise<void> => {
+  // Créer un lien public (invité)
+  const createPublicLink = async (longUrl: string): Promise<{ link: ShortLink; token: string } | null> => {
     loading.value = true
     error.value = null
 
     try {
-      const response = await useApiFetch<GetLinksResponse>('/eqt/link', {
-        params: { page, limit }
+      const response = await useApiFetch<{
+        message: string;
+        link: ShortLink;
+        guestAccessToken: string;
+        warning?: string;
+      }>('/eqt/link/public', {
+        method: 'POST',
+        body: { longUrl }
+      });
+
+      guestLink.value = response.link
+      guestToken.value = response.guestAccessToken
+
+      return {
+        link: response.link,
+        token: response.guestAccessToken
+      }
+    } catch (err: any) {
+      console.error('Erreur lors de la création du lien public:', err)
+      error.value = err.data?.message || 'Erreur lors de la création du lien'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // Récupérer les liens de l'utilisateur authentifié
+  const fetchUserLinks = async (page: number = 1, limit: number = 10, includeGuestLinks: boolean = false): Promise<void> => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await useApiFetch<GetLinksResponse>('/eqt/link/user', {
+        params: { page, limit, includeGuestLinks }
       })
 
       links.value = response.data
@@ -74,11 +103,50 @@ export const useLinksStore = defineStore('links', () => {
         linksOnPage: response.nbOnPage
       }
     } catch (err: any) {
-      console.error('Erreur lors de la récupération des liens:', err)
-      error.value = err.data?.message || 'Une erreur est survenue lors de la récupération des liens'
+      console.error('Erreur lors de la récupération des liens utilisateur:', err)
+      error.value = err.data?.message || 'Erreur lors de la recuperation de vos liens'
     } finally {
       loading.value = false
     }
+  }
+
+  // Récupérer les liens publics avec un token
+  const fetchPublicLinks = async (token: string, page: number = 1, limit: number = 10): Promise<void> => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await useApiFetch<GetLinksResponse>('/eqt/link/public', {
+        params: { guestAccessToken: token, page, limit }
+      })
+
+      links.value = response.data
+      pagination.value = {
+        currentPage: response.currentPage,
+        totalPages: response.totalPages,
+        totalLinks: response.nb,
+        linksOnPage: response.nbOnPage
+      }
+    } catch (err: any) {
+      console.error('Erreur lors de la récupération des liens publics:', err)
+      if (err.status === 401) {
+        error.value = 'Token invalide ou expiré.';
+      } else {
+        error.value = err.data?.message || 'Une erreur est survenue lors de la récupération des liens'
+      }
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // Fonction de compatibilité (utilise createUserLink par défaut)
+  const createShortLink = async (longUrl: string, alias?: string, activateAt?: string, expiresAt?: string): Promise<ShortLink | null> => {
+    return createUserLink(longUrl, alias, activateAt, expiresAt)
+  }
+
+  // Fonction de compatibilité (utilise fetchUserLinks par défaut)
+  const fetchLinks = async (page: number = 1, limit: number = 10): Promise<void> => {
+    return fetchUserLinks(page, limit)
   }
 
   const fetchLinkById = async (identifier: string): Promise<ShortLink | null> => {
@@ -274,38 +342,8 @@ export const useLinksStore = defineStore('links', () => {
     }
   }
 
-  // Créer un lien en tant qu'invité
-  const createGuestShortLink = async (longUrl: string): Promise<{ link: ShortLink; token: string } | null> => {
-    loading.value = true
-    error.value = null
-
-    try {
-      const response = await $fetch<{
-        message: string;
-        link: ShortLink;
-        guestAccessToken: string
-      }>(`${config.public.pgsBaseAPI}/eqt/link`, {
-        method: 'POST',
-        body: { longUrl }
-      });
-
-      guestLink.value = response.link
-      guestToken.value = response.guestAccessToken
-
-      return {
-        link: response.link,
-        token: response.guestAccessToken
-      }
-    } catch (err: any) {
-      console.error('Erreur lors de la création du lien invité:', err)
-      error.value = err.data?.message || 'Une erreur est survenue lors de la création du lien'
-      return null
-    } finally {
-      loading.value = false
-    }
-  }
-
   // Récupérer un lien invité avec son token
+
   const fetchGuestLink = async (identifier: string, token: string): Promise<ShortLink | null> => {
     loading.value = true
     error.value = null
@@ -381,8 +419,11 @@ export const useLinksStore = defineStore('links', () => {
 
     // Actions
     createShortLink,
-    createGuestShortLink,
+    createUserLink,
+    createPublicLink,
     fetchLinks,
+    fetchUserLinks,
+    fetchPublicLinks,
     fetchLinkById,
     fetchGuestLink,
     extractMetadata,
