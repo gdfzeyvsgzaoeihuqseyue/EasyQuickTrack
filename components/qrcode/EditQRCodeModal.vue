@@ -12,12 +12,9 @@
         <!-- Titre -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
-          <input
-            v-model="localOptions.title"
-            type="text"
+          <input v-model="localOptions.title" type="text"
             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            :disabled="loading"
-          />
+            :disabled="loading" />
         </div>
 
         <!-- Options de base -->
@@ -45,8 +42,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Couleur du QR code</label>
             <div class="flex items-center space-x-2">
               <input v-model="localOptions.foregroundColor" type="color"
-                class="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer"
-                :disabled="loading" />
+                class="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer" :disabled="loading" />
               <input v-model="localOptions.foregroundColor" type="text"
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 :disabled="loading" />
@@ -57,8 +53,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Couleur de fond</label>
             <div class="flex items-center space-x-2">
               <input v-model="localOptions.backgroundColor" type="color"
-                class="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer"
-                :disabled="loading" />
+                class="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer" :disabled="loading" />
               <input v-model="localOptions.backgroundColor" type="text"
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 :disabled="loading" />
@@ -88,8 +83,7 @@
         <!-- Options avancées -->
         <div class="border-t pt-6">
           <button type="button" @click="showAdvanced = !showAdvanced"
-            class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 mb-4"
-            :disabled="loading">
+            class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 mb-4" :disabled="loading">
             <IconChevronRight :class="['w-4 h-4 mr-2 transition-transform', showAdvanced ? 'rotate-90' : '']" />
             Options avancées
           </button>
@@ -112,7 +106,7 @@
 
             <div class="flex items-center space-x-4">
               <label class="flex items-center">
-                <input v-model="localOptions.addSignature" type="checkbox" 
+                <input v-model="localOptions.addSignature" type="checkbox"
                   class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" disabled />
                 <span class="ml-2 text-sm font-medium text-gray-700">Ajouter la signature "by PGS"</span>
               </label>
@@ -123,8 +117,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Couleur de la signature</label>
                 <div class="flex items-center space-x-2">
                   <input v-model="localOptions.signatureColor" type="color"
-                    class="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer"
-                    :disabled="loading" />
+                    class="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer" :disabled="loading" />
                   <input v-model="localOptions.signatureColor" type="text"
                     class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                     :disabled="loading" />
@@ -173,7 +166,7 @@
 <script setup lang="ts">
 import { ref, watch, reactive } from 'vue'
 import { IconChevronRight, IconLoader2, IconX } from '@tabler/icons-vue'
-import type { QRCodeRecord } from '~/stores/qrcode'
+import type { QRCodeRecord } from '~/types'
 
 const props = defineProps<{
   visible: boolean

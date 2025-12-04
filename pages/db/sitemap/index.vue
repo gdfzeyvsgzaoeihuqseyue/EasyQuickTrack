@@ -67,8 +67,7 @@
           {{ searchQuery || dateFilter !== 'all' || urlCountFilter !== 'all' ? 'Aucun résultat trouvé' : 'Aucun sitemap trouvé' }}
         </h3>
         <p class="text-gray-500 mb-4">
-          {{ searchQuery || dateFilter !== 'all' || urlCountFilter !== 'all' ? 'Essayez de modifier vos critères de recherche'
-            : 'Commencez par générer votre premier sitemap' }}
+          {{ searchQuery || dateFilter !== 'all' || urlCountFilter !== 'all' ? 'Essayez de modifier vos critères de recherche' : 'Commencez par générer votre premier sitemap' }}
         </p>
         <button @click="openGenerateModal" class="btn-primary">
           Générer un Sitemap
@@ -76,14 +75,15 @@
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-        <SitemapItemCard v-for="sitemap in filteredSitemaps" :key="sitemap.id" :sitemap="sitemap"
+        <SitemapItemCard v-for="sitemap in filteredSitemaps" :key="sitemap.id" :sitemap="sitemap as any"
           @delete="confirmDelete" />
       </div>
 
       <div v-if="sitemapStore.pagination.totalPages > 1" class="px-6 py-4 border-t border-gray-200">
         <div class="flex items-center justify-between">
           <div class="text-sm text-gray-500">
-            Affichage de {{ sitemapStore.pagination.sitemapsOnPage }} sur {{ sitemapStore.pagination.totalSitemaps }} sitemaps
+            Affichage de {{ sitemapStore.pagination.sitemapsOnPage }} sur {{ sitemapStore.pagination.totalSitemaps }}
+            sitemaps
           </div>
           <div class="flex items-center space-x-2">
             <button @click="changePage(sitemapStore.pagination.currentPage - 1)"
@@ -130,8 +130,8 @@ definePageMeta({
 const sitemapStore = useSitemapStore();
 
 const searchQuery = ref('');
-const dateFilter = ref('all'); 
-const urlCountFilter = ref('all'); 
+const dateFilter = ref('all');
+const urlCountFilter = ref('all');
 
 const showGenerateModal = ref(false);
 const showDeleteModal = ref(false);
@@ -257,7 +257,7 @@ const handleGenerateSitemap = async (options: SitemapGenerationOptions) => {
 const confirmDelete = (id: string) => {
   const sitemap = sitemapStore.sitemaps.find(s => s.id === id);
   if (sitemap) {
-    sitemapToDelete.value = sitemap;
+    sitemapToDelete.value = sitemap as any;
     showDeleteModal.value = true;
     sitemapStore.clearError();
   }
@@ -291,4 +291,3 @@ useSeoMeta({
   @apply bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors;
 }
 </style>
-

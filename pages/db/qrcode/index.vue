@@ -333,7 +333,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
-import { useQRCodeStore, type QRCodeRecord } from '~/stores/qrcode';
+import { useQRCodeStore } from '~/stores/qrcode';
+import type { QRCodeRecord } from '~/types';
 import { IconAlertTriangle, IconCalendar, IconDownload, IconEdit, IconEye, IconLayoutGrid, IconLayoutList, IconLink, IconLoader, IconPlus, IconQrcode, IconRefresh, IconSearch, IconTrash, IconWorld, IconInfoCircle } from '@tabler/icons-vue'
 import { BulkDeleteQRCodeModal, DeleteQRCodeModal, EditQRCodeModal } from '@/components/qrcode'
 import { AppNotification } from '@/components/app';

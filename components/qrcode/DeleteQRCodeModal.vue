@@ -4,25 +4,25 @@
       <div class="text-center">
         <IconAlertTriangle class="w-16 h-16 text-red-500 mx-auto mb-4" />
         <h3 class="text-xl font-bold text-gray-900 mb-2">Confirmer la suppression</h3>
-        
+
         <div v-if="qrCode" class="mb-6">
           <p class="text-gray-600 mb-4">
             Êtes-vous sûr de vouloir supprimer ce QR Code ?
           </p>
-          
+
           <!-- Aperçu du QR Code -->
           <div class="flex justify-center mb-4">
             <div class="w-20 h-20 bg-white rounded-lg border-2 border-gray-200 p-2">
               <img :src="qrCode.qrCodeBase64" :alt="qrCode.title" class="w-full h-full object-contain" />
             </div>
           </div>
-          
+
           <div class="bg-gray-50 p-4 rounded-lg text-left">
             <p class="text-sm text-gray-700 mb-2">
               <span class="font-medium">Titre:</span> {{ qrCode.title || 'QR Code sans titre' }}
             </p>
             <p class="text-sm text-gray-700 mb-2">
-              <span class="font-medium">Type:</span> 
+              <span class="font-medium">Type:</span>
               <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ml-1"
                 :class="qrCode.qrCodeType === 'shortlink' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
                 {{ qrCode.qrCodeType === 'shortlink' ? 'Lien court' : 'URL directe' }}
@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import { IconAlertTriangle, IconLoader2 } from '@tabler/icons-vue'
-import type { QRCodeRecord } from '~/stores/qrcode'
+import type { QRCodeRecord } from '~/types'
 
 const props = defineProps<{
   visible: boolean

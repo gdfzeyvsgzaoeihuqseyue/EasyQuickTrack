@@ -70,8 +70,7 @@
           {{ searchQuery || dateFilter !== 'all' || hasSitemapUrlFilter !== 'all' || userAgentSearchQuery ? 'Aucun résultat trouvé' : 'Aucune configuration robots.txt trouvée' }}
         </h3>
         <p class="text-gray-500 mb-4">
-          {{ searchQuery || dateFilter !== 'all' || hasSitemapUrlFilter !== 'all' || userAgentSearchQuery ? 'Essayez de modifier vos critères de recherche'
-            : 'Commencez par générer votre première configuration robots.txt' }}
+          {{ searchQuery || dateFilter !== 'all' || hasSitemapUrlFilter !== 'all' || userAgentSearchQuery ? 'Essayez de modifier vos critères de recherche' : 'Commencez par générer votre première configuration robots.txt' }}
         </p>
         <button @click="openGenerateModal" class="btn-primary">
           Générer un robots.txt
@@ -186,7 +185,7 @@ const filteredConfigs = computed<any>(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
     configs = configs.filter(config =>
-      config.title.toLowerCase().includes(query) ||
+      (config.title || '').toLowerCase().includes(query) ||
       (config.sitemapUrl && config.sitemapUrl.toLowerCase().includes(query)) ||
       Object.keys(config.userAgents).some(ua => ua.toLowerCase().includes(query))
     );
@@ -294,4 +293,3 @@ useSeoMeta({
   robots: 'noindex, nofollow'
 });
 </script>
-
