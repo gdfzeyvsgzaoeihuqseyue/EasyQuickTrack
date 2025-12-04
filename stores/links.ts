@@ -86,13 +86,13 @@ export const useLinksStore = defineStore('links', () => {
   }
 
   // Récupérer les liens de l'utilisateur authentifié
-  const fetchUserLinks = async (page: number = 1, limit: number = 10, includeGuestLinks: boolean = false): Promise<void> => {
+  const fetchUserLinks = async (page: number = 1, limit: number = 10): Promise<void> => {
     loading.value = true
     error.value = null
 
     try {
       const response = await useApiFetch<GetLinksResponse>('/eqt/link/user', {
-        params: { page, limit, includeGuestLinks }
+        params: { page, limit }
       })
 
       links.value = response.data

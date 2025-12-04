@@ -3,7 +3,8 @@
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-bold text-gray-900">Robots.txt récents</h2>
       <div class="flex gap-2">
-        <button @click="$emit('open-generate-robots-txt-modal')" class="flex items-center btn-primary text-sm px-3 py-2">
+        <button @click="$emit('open-generate-robots-txt-modal')"
+          class="flex items-center btn-primary text-sm px-3 py-2">
           <IconPlus class="w-4 h-4 mr-1" />
           Nouveau
         </button>
@@ -128,7 +129,7 @@ const downloadRobotsTxt = (config: RobotsTxtConfig) => {
     return;
   }
 
-  const filename = `robots-${config.title.replace(/\s/g, '-') || config.id}.txt`;
+  const filename = `robots-${(config.title || '').replace(/\s/g, '-') || config.id}.txt`;
   const blob = new Blob([content], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
 

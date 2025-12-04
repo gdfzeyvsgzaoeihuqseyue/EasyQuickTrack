@@ -3,8 +3,7 @@
     <h2 class="text-2xl font-bold text-gray-900 mb-6">QR Code associé</h2>
     <div class="flex flex-col md:flex-row items-center gap-6">
       <div class="w-32 h-32 bg-white rounded-lg border p-2 flex-shrink-0">
-        <img :src="associatedQRCode.qrCodeBase64" :alt="associatedQRCode.title"
-          class="w-full h-full object-contain" />
+        <img :src="associatedQRCode.qrCodeBase64" :alt="associatedQRCode.title" class="w-full h-full object-contain" />
       </div>
       <div class="flex-1 text-center md:text-left">
         <p class="text-lg font-semibold text-gray-900 mb-2">{{ associatedQRCode.title || 'QR Code sans titre' }}</p>
@@ -32,7 +31,7 @@
 
 <script setup lang="ts">
 import { IconQrcode } from '@tabler/icons-vue';
-import type { QRCodeRecord } from '~/stores/qrcode';
+import type { QRCodeRecord } from '~/types';
 
 defineProps<{
   associatedQRCode: QRCodeRecord | null;

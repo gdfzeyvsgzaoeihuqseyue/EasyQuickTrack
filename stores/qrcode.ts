@@ -192,7 +192,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
       if (options.addSignature !== undefined) params.append('addSignature', options.addSignature.toString())
       if (options.signatureColor) params.append('signatureColor', options.signatureColor)
       if (options.signatureFontSize) params.append('signatureFontSize', options.signatureFontSize.toString())
-        
+
       const url = `${baseUrl}/eqt/${linkId}/qrcode?${params.toString()}`
 
       // Créer FormData si un logo est fourni

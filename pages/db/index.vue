@@ -220,22 +220,22 @@ const closeNotification = () => {
 // Surveillance des erreurs des stores
 watch(() => linksStore.error, (newError) => {
   if (newError) {
-    showFloatingNotification(newError, 'error');
+    showFloatingNotification(typeof newError === 'string' ? newError : (newError as any).message || 'Une erreur est survenue', 'error');
   }
 });
 watch(() => sitemapStore.error, (newError) => {
   if (newError) {
-    showFloatingNotification(newError, 'error');
+    showFloatingNotification(typeof newError === 'string' ? newError : (newError as any).message || 'Une erreur est survenue', 'error');
   }
 });
 watch(() => robotsTxtStore.error, (newError) => {
   if (newError) {
-    showFloatingNotification(newError, 'error');
+    showFloatingNotification(typeof newError === 'string' ? newError : (newError as any).message || 'Une erreur est survenue', 'error');
   }
 });
 watch(() => qrStore.error, (newError) => {
   if (newError) {
-    showFloatingNotification(newError, 'error');
+    showFloatingNotification(typeof newError === 'string' ? newError : (newError as any).message || 'Une erreur est survenue', 'error');
   }
 });
 

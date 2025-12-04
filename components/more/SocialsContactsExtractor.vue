@@ -104,7 +104,8 @@
               <ul v-if="Object.keys(socialsContactsStore.result.socialLinks).length"
                 class="list-disc list-inside text-gray-600">
                 <li v-for="(link, platform) in socialsContactsStore.result.socialLinks" :key="platform">
-                  {{ platform }}: <a :href="link" target="_blank" class="text-primary-600 hover:underline">{{ link }}</a>
+                  {{ platform }}: <a :href="link" target="_blank" class="text-primary-600 hover:underline">{{ link
+                    }}</a>
                 </li>
               </ul>
               <p v-else class="text-gray-600">Aucun lien social trouvé.</p>
@@ -260,11 +261,11 @@ import { AppNotification } from '@/components/app';
 
 const props = defineProps<{
   initialUrl?: string;
-  isModal?: boolean; 
-  visible?: boolean; 
+  isModal?: boolean;
+  visible?: boolean;
 }>();
 
-const emit = defineEmits(['close']); 
+const emit = defineEmits(['close']);
 
 const socialsContactsStore = useSocialsContactsStore();
 

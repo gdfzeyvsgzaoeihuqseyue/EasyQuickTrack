@@ -9,7 +9,7 @@
         </button>
       </div>
       <!-- Contenu du composant PagePreview -->
-      <div class="page-preview-content">        
+      <div class="page-preview-content">
         <p class="text-gray-600 mb-4">
           Visualisez n'importe quelle page web sur différents appareils et capturez des captures d'écran.
         </p>
@@ -98,8 +98,7 @@
                 <div class="w-8 h-1 bg-gray-600 rounded-full mb-2"></div>
               </div>
 
-              <div v-if="loading"
-                class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-30">
+              <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-30">
                 <IconLoader2 class="animate-spin w-12 h-12 text-primary-600" />
               </div>
             </div>
@@ -212,8 +211,7 @@
             <div class="w-8 h-1 bg-gray-600 rounded-full mb-2"></div>
           </div>
 
-          <div v-if="loading"
-            class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-30">
+          <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-30">
             <IconLoader2 class="animate-spin w-12 h-12 text-primary-600" />
           </div>
         </div>
@@ -244,11 +242,11 @@ import { AppNotification } from '@/components/app';
 // Etat
 const props = defineProps<{
   initialUrl?: string;
-  isModal?: boolean; 
+  isModal?: boolean;
   visible?: boolean;
 }>();
 
-const emit = defineEmits(['close']); 
+const emit = defineEmits(['close']);
 
 const url = ref(props.initialUrl || '');
 const iframeSrc = ref('');
@@ -346,7 +344,7 @@ const iframeWrapperStyle = computed(() => {
     width: '100%',
     height: '100%',
     padding: padding,
-    boxSizing: 'border-box',
+    boxSizing: 'border-box' as const,
   };
 });
 

@@ -119,7 +119,7 @@ const props = defineProps<{
   visible: boolean;
   loading?: boolean;
   error?: string | null;
-  initialConfig?: RobotsTxtConfig | null; 
+  initialConfig?: RobotsTxtConfig | null;
 }>();
 
 const emit = defineEmits<{
@@ -132,7 +132,7 @@ const isEditMode = computed(() => !!props.initialConfig);
 const form = reactive<GenerateRobotsTxtPayload>({
   title: '',
   userAgents: {
-    '*': { allow: [], disallow: [] } 
+    '*': { allow: [], disallow: [] }
   },
   sitemapUrl: '',
   customRules: '',
@@ -141,7 +141,7 @@ const form = reactive<GenerateRobotsTxtPayload>({
 watch(() => props.visible, (newVal) => {
   if (newVal) {
     if (props.initialConfig) {
-      form.title = props.initialConfig.title;
+      form.title = props.initialConfig.title || '';
       form.sitemapUrl = props.initialConfig.sitemapUrl || '';
       form.customRules = props.initialConfig.customRules || '';
 
@@ -150,14 +150,14 @@ watch(() => props.visible, (newVal) => {
         const rules = props.initialConfig.userAgents[userAgentKey];
         form.userAgents[userAgentKey] = {
           allow: rules.allow ? [...rules.allow] : [],
-          disallow: rules.disallow ? [...rules.disallow] : [] 
+          disallow: rules.disallow ? [...rules.disallow] : []
         };
       }
     } else {
       Object.assign(form, {
         title: '',
         userAgents: {
-          '*': { allow: [], disallow: [] } 
+          '*': { allow: [], disallow: [] }
         },
         sitemapUrl: '',
         customRules: '',
@@ -170,26 +170,26 @@ const addRule = (userAgent: string, type: 'allow' | 'disallow') => {
   if (!form.userAgents[userAgent]) {
     form.userAgents[userAgent] = { allow: [], disallow: [] };
   }
-  
+
   const userAgentRules = form.userAgents[userAgent];
-  
+
   if (type === 'allow') {
     if (!userAgentRules.allow) {
-      userAgentRules.allow = []; 
+      userAgentRules.allow = [];
     }
-    userAgentRules.allow.push(''); 
-  } else { 
+    userAgentRules.allow.push('');
+  } else {
     if (!userAgentRules.disallow) {
-      userAgentRules.disallow = []; 
+      userAgentRules.disallow = [];
     }
-    userAgentRules.disallow.push(''); 
+    userAgentRules.disallow.push('');
   }
 };
 
 const removeRule = (userAgent: string, type: 'allow' | 'disallow', index: number) => {
   const userAgentRules = form.userAgents[userAgent];
   if (!userAgentRules) return;
-  
+
   // Supprimer la règle selon le type
   if (type === 'allow' && userAgentRules.allow) {
     userAgentRules.allow.splice(index, 1); // Fonctionne maintenant

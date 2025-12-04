@@ -121,11 +121,11 @@ import { DeleteLinkModal, EditLinkModal, LinkAnalyticsDetails, LinkMetadataCard,
 import { GenerateSitemapModal } from '@/components/sitemap';
 import { GenerateRobotsTxtModal } from '@/components/robotstxt';
 import { SocialsContactsExtractor, PageSpeedChecker, PagePreview } from '@/components/more';
-import { EditQRCodeModal } from '@/components/qrcode'; 
+import { EditQRCodeModal } from '@/components/qrcode';
 import { IconAlertTriangle, IconChevronLeft, IconLoader, IconMail, IconGauge, IconEye } from '@tabler/icons-vue';
 import type { GenerateSitemapResponse, SitemapGenerationOptions, GenerateRobotsTxtPayload, GenerateRobotsTxtResponse, RobotsTxtConfig, ShortLinkSitemap } from '@/types';
 import type { ShortLink } from '~/types';
-import type { QRCodeRecord } from '~/stores/qrcode';
+import type { QRCodeRecord } from '~/types';
 import { AppNotification } from '@/components/app';
 
 definePageMeta({
@@ -188,25 +188,25 @@ const closeNotification = () => {
 
 watch(() => linksStore.error, (newError) => {
   if (newError) {
-    showFloatingNotification(newError, 'error');
+    showFloatingNotification(typeof newError === 'string' ? newError : (newError as any).message || 'Une erreur est survenue', 'error');
   }
 });
 
 watch(() => sitemapStore.error, (newError) => {
   if (newError) {
-    showFloatingNotification(newError, 'error');
+    showFloatingNotification(typeof newError === 'string' ? newError : (newError as any).message || 'Une erreur est survenue', 'error');
   }
 });
 
 watch(() => robotsTxtStore.error, (newError) => {
   if (newError) {
-    showFloatingNotification(newError, 'error');
+    showFloatingNotification(typeof newError === 'string' ? newError : (newError as any).message || 'Une erreur est survenue', 'error');
   }
 });
 
 watch(() => qrStore.error, (newError) => {
   if (newError) {
-    showFloatingNotification(newError, 'error');
+    showFloatingNotification(typeof newError === 'string' ? newError : (newError as any).message || 'Une erreur est survenue', 'error');
   }
 });
 
@@ -313,7 +313,7 @@ const handleUpdateQRCode = async (options: any) => {
       ) || null;
     }
   } else {
-    showFloatingNotification(qrStore.error || 'Erreur lors de la mise à jour du QR Code.', 'error');
+    showFloatingNotification((typeof qrStore.error === 'string' ? qrStore.error : (qrStore.error as any)?.message) || 'Erreur lors de la mise à jour du QR Code.', 'error');
   }
 };
 
@@ -337,7 +337,7 @@ const handleUpdateLink = async (newLongUrl: string, activateAt?: string, expires
     await logsStore.fetchLinkLogs(linkId);
     showFloatingNotification('Lien mis à jour avec succès !', 'success');
   } else {
-    showFloatingNotification(linksStore.error || 'Erreur lors de la mise à jour.', 'error');
+    showFloatingNotification((typeof linksStore.error === 'string' ? linksStore.error : (linksStore.error as any)?.message) || 'Erreur lors de la mise à jour.', 'error');
   }
 };
 
@@ -362,7 +362,7 @@ const deleteLink = async () => {
     showFloatingNotification('Lien supprimé avec succès !', 'success');
     await router.push('/db/links');
   } else {
-    showFloatingNotification(linksStore.error || 'Erreur lors de la suppression.', 'error');
+    showFloatingNotification((typeof linksStore.error === 'string' ? linksStore.error : (linksStore.error as any)?.message) || 'Erreur lors de la suppression.', 'error');
   }
 };
 
@@ -385,7 +385,7 @@ const toggleLinkStatus = async (event: Event) => {
       await logsStore.fetchLinkLogs(linkId);
     } else {
       target.checked = !shouldDisable;
-      showFloatingNotification(linksStore.error || 'Erreur lors du changement de statut.', 'error');
+      showFloatingNotification((typeof linksStore.error === 'string' ? linksStore.error : (linksStore.error as any)?.message) || 'Erreur lors du changement de statut.', 'error');
     }
   } catch (error) {
     target.checked = !shouldDisable;
@@ -414,14 +414,14 @@ const handleGenerateSitemap = async (options: SitemapGenerationOptions, sitemapI
     result = await sitemapStore.updateSitemap(sitemapId, options.title || '');
     if (result) {
       showFloatingNotification(`Sitemap "${options.title}" mis à jour avec succès !`, 'success');
-      await sitemapStore.fetchSitemaps(); 
+      await sitemapStore.fetchSitemaps();
     }
   } else {
     // Generate new sitemap
     result = await sitemapStore.generateSitemap(options);
     if (result) {
       showFloatingNotification(`Sitemap généré avec succès pour ${result.urlsCount} URLs !`, 'success');
-      await sitemapStore.fetchSitemaps(); 
+      await sitemapStore.fetchSitemaps();
     }
   }
 
@@ -432,7 +432,7 @@ const handleGenerateSitemap = async (options: SitemapGenerationOptions, sitemapI
 
 // Robots.txt
 const openGenerateRobotsTxtModal = (config: RobotsTxtConfig | null) => {
-  robotsTxtToEdit.value = config; 
+  robotsTxtToEdit.value = config;
   showGenerateRobotsTxtModal.value = true;
   robotsTxtStore.clearError();
 };
@@ -456,7 +456,7 @@ const handleGenerateRobotsTxt: any = async (payload: GenerateRobotsTxtPayload, c
     result = await robotsTxtStore.generateRobotsTxt(payload);
     if (result) {
       showFloatingNotification(`Configuration robots.txt "${result.data.title}" générée avec succès !`, 'success');
-      await robotsTxtStore.fetchRobotsTxtConfigs(); 
+      await robotsTxtStore.fetchRobotsTxtConfigs();
     }
   }
 
