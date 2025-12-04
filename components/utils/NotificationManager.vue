@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { onMounted, computed, ref, watch } from 'vue';
-import { useSiteInfoStore } from '~/stores/siteinfo';
+// import { useSiteInfoStore } from '~/stores/siteinfo';
 import { NotificationItem } from '@/components/utils';
 import type { SiteInfo } from '@/types';
 
@@ -32,7 +32,7 @@ const saveDismissedNotifications = () => {
 // Filtre les notifications pour ne pas afficher celles qui ont été masquées
 const filteredNotifications = computed(() => {
   return siteInfoStore.activeNotifications.filter(
-    (notification) => !dismissedNotificationIds.value.includes(notification.id)
+    (notification: SiteInfo) => !dismissedNotificationIds.value.includes(notification.id)
   );
 });
 
@@ -54,14 +54,14 @@ onMounted(async () => {
   loadDismissedNotifications();
   await siteInfoStore.fetchActiveSiteInfos();
 
-  filteredNotifications.value.forEach((notification) => {
+  filteredNotifications.value.forEach((notification: SiteInfo) => {
     siteInfoStore.trackEvent(notification.id, 'views');
   });
 });
 
-watch(filteredNotifications, (newNotifications, oldNotifications) => {
-  const oldIds = new Set(oldNotifications.map(n => n.id));
-  newNotifications.forEach(notification => {
+watch(filteredNotifications, (newNotifications: SiteInfo[], oldNotifications: SiteInfo[]) => {
+  const oldIds = new Set(oldNotifications.map((n: SiteInfo) => n.id));
+  newNotifications.forEach((notification: SiteInfo) => {
     if (!oldIds.has(notification.id)) {
       siteInfoStore.trackEvent(notification.id, 'views');
     }
