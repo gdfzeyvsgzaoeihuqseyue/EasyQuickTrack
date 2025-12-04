@@ -2,34 +2,28 @@
   <Transition :name="animationName">
     <div v-if="isVisible"
       :class="['p-4 shadow-lg rounded-lg', positionClasses, displayTypeClasses, { 'fixed': notification.displayType !== 'banner', 'z-50': notification.displayType !== 'banner' }]"
-      :style="notificationStyles"
-      @click="handleNotificationClick"
-    >
+      :style="notificationStyles" @click="handleNotificationClick">
       <h3 class="font-bold" :style="{ color: notification.stylesSettings.textColor }">{{ notification.title }}</h3>
       <p class="mt-1" :style="{ color: notification.stylesSettings.textColor }" v-html="processedMessageHtml"></p>
 
       <div v-if="notification.links && notification.links.length" class="mt-2">
         <a v-for="(link, index) in notification.links" :key="index" :href="link.url"
-           :target="notification.linkSettings.openInNewTab ? '_blank' : '_self'"
-           :style="{ color: notification.stylesSettings.linkColor, textDecoration: notification.linkSettings.underline ? 'underline' : 'none' }"
-           class="mr-3"
-           data-notification-link="true"
-        >
+          :target="notification.linkSettings.openInNewTab ? '_blank' : '_self'"
+          :style="{ color: notification.stylesSettings.linkColor, textDecoration: notification.linkSettings.underline ? 'underline' : 'none' }"
+          class="mr-3" data-notification-link="true">
           {{ link.label }}
         </a>
       </div>
 
       <button v-if="notification.showCloseButton" @click="closeNotification"
         class="absolute top-2 right-2 text-white hover:text-gray-200 focus:outline-none"
-        :style="{ color: notification.stylesSettings.textColor }"
-      >
+        :style="{ color: notification.stylesSettings.textColor }">
         <IconX class="w-5 h-5" />
       </button>
 
       <button v-if="notification.showDismissButton" @click="dismissNotification"
         class="mt-3 px-3 py-1 text-sm rounded-md border border-white text-white hover:bg-white hover:text-primary transition-colors"
-        :style="{ borderColor: notification.stylesSettings.textColor, color: notification.stylesSettings.textColor }"
-      >
+        :style="{ borderColor: notification.stylesSettings.textColor, color: notification.stylesSettings.textColor }">
         Ne plus afficher
       </button>
     </div>
@@ -57,7 +51,7 @@ const notificationStyles = computed(() => ({
   borderColor: props.notification.stylesSettings.borderColor,
   fontSize: props.notification.stylesSettings.fontSize,
   fontWeight: props.notification.stylesSettings.fontWeight,
-  borderWidth: '1px', 
+  borderWidth: '1px',
   borderStyle: 'solid',
 }));
 
@@ -96,8 +90,8 @@ const animationName = computed(() => {
     case 'slideDown': return 'slide-down';
     case 'fadeIn': return 'fade-in';
     case 'slideUp': return 'slide-up';
-    case 'none': return ''; 
-    default: return 'fade-in'; 
+    case 'none': return '';
+    default: return 'fade-in';
   }
 });
 
@@ -106,7 +100,7 @@ const processedMessageHtml = computed(() => {
   const message = props.notification.message;
   const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g;
 
-  return message.replace(linkRegex, (match, linkText, url) => {
+  return message.replace(linkRegex, (match: string, linkText: string, url: string) => {
     const target = props.notification.linkSettings.openInNewTab ? '_blank' : '_self';
     const underline = props.notification.linkSettings.underline ? 'underline' : 'none';
     const color = props.notification.stylesSettings.linkColor;
@@ -118,20 +112,20 @@ const processedMessageHtml = computed(() => {
 const closeNotification = () => {
   isVisible.value = false;
   if (autoHideTimeout) clearTimeout(autoHideTimeout);
-  emit('track-event', { id: props.notification.id, eventType: 'closes' }); 
+  emit('track-event', { id: props.notification.id, eventType: 'closes' });
 };
 
 const dismissNotification = () => {
   isVisible.value = false;
   if (autoHideTimeout) clearTimeout(autoHideTimeout);
-  emit('dismiss', props.notification.id); 
+  emit('dismiss', props.notification.id);
 };
 
 // Handle clicks on the notification, specifically for links
 const handleNotificationClick = (event: MouseEvent) => {
   const target = event.target as HTMLElement;
   if (target.tagName === 'A' && target.hasAttribute('data-notification-link')) {
-    emit('track-event', { id: props.notification.id, eventType: 'clicks' }); 
+    emit('track-event', { id: props.notification.id, eventType: 'clicks' });
   }
 };
 
@@ -149,27 +143,35 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.slide-down-enter-active, .slide-down-leave-active {
+.slide-down-enter-active,
+.slide-down-leave-active {
   transition: all v-bind('notification.animationSettings.duration + "ms"') ease-in-out;
 }
-.slide-down-enter-from, .slide-down-leave-to {
+
+.slide-down-enter-from,
+.slide-down-leave-to {
   transform: translateY(-100%);
   opacity: 0;
 }
 
-.fade-in-enter-active, .fade-in-leave-active {
+.fade-in-enter-active,
+.fade-in-leave-active {
   transition: opacity v-bind('notification.animationSettings.duration + "ms"') ease-in-out;
 }
-.fade-in-enter-from, .fade-in-leave-to {
+
+.fade-in-enter-from,
+.fade-in-leave-to {
   opacity: 0;
 }
 
-.slide-up-enter-active, .slide-up-leave-active {
+.slide-up-enter-active,
+.slide-up-leave-active {
   transition: all v-bind('notification.animationSettings.duration + "ms"') ease-in-out;
 }
-.slide-up-enter-from, .slide-up-leave-to {
+
+.slide-up-enter-from,
+.slide-up-leave-to {
   transform: translateY(100%);
   opacity: 0;
 }
 </style>
-
