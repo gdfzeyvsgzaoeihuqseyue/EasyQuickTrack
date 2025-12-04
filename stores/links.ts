@@ -29,7 +29,7 @@ export const useLinksStore = defineStore('links', () => {
     error.value = null
 
     try {
-      const response = await useApiFetch<CreateLinkResponse>('/eqt/link/user', {
+      const response = await useApiFetch<CreateLinkResponse>('/user/eqt/create-link', {
         method: 'POST',
         body: { longUrl, alias, activateAt, expiresAt }
       });
@@ -54,7 +54,7 @@ export const useLinksStore = defineStore('links', () => {
   }
 
   // Créer un lien public (invité)
-  const createPublicLink = async (longUrl: string): Promise<{ link: ShortLink; token: string } | null> => {
+  const createPublicLink = async (longUrl: string): Promise<{ link: ShortLink; token: string; expiresAt?: string } | null> => {
     loading.value = true
     error.value = null
 
@@ -63,8 +63,10 @@ export const useLinksStore = defineStore('links', () => {
         message: string;
         link: ShortLink;
         guestAccessToken: string;
+        expiresAt?: string;
         warning?: string;
-      }>('/eqt/link/public', {
+        note?: string;
+      }>('/public/eqt/create-link', {
         method: 'POST',
         body: { longUrl }
       });
@@ -74,11 +76,18 @@ export const useLinksStore = defineStore('links', () => {
 
       return {
         link: response.link,
-        token: response.guestAccessToken
+        token: response.guestAccessToken,
+        expiresAt: response.expiresAt
       }
     } catch (err: any) {
       console.error('Erreur lors de la création du lien public:', err)
-      error.value = err.data?.message || 'Erreur lors de la création du lien'
+
+      // Gestion spécifique de l'erreur 429 (limite atteinte)
+      if (err.status === 429 || err.statusCode === 429) {
+        error.value = err.data?.message || 'Limite atteinte : maximum 2 liens par jour par adresse IP.'
+      } else {
+        error.value = err.data?.message || 'Erreur lors de la création du lien'
+      }
       return null
     } finally {
       loading.value = false
@@ -91,7 +100,7 @@ export const useLinksStore = defineStore('links', () => {
     error.value = null
 
     try {
-      const response = await useApiFetch<GetLinksResponse>('/eqt/link/user', {
+      const response = await useApiFetch<GetLinksResponse>('/user/eqt/get-link', {
         params: { page, limit }
       })
 
@@ -116,7 +125,7 @@ export const useLinksStore = defineStore('links', () => {
     error.value = null
 
     try {
-      const response = await useApiFetch<GetLinksResponse>('/eqt/link/public', {
+      const response = await useApiFetch<GetLinksResponse>('/public/eqt/get-link', {
         params: { guestAccessToken: token, page, limit }
       })
 
@@ -154,7 +163,7 @@ export const useLinksStore = defineStore('links', () => {
     error.value = null
 
     try {
-      const response = await useApiFetch<GetLinkResponse>(`/eqt/link/${identifier}`);
+      const response = await useApiFetch<GetLinkResponse>(`user/eqt/get-link/${identifier}`);
 
       currentLink.value = response.data
       return response.data
@@ -170,6 +179,32 @@ export const useLinksStore = defineStore('links', () => {
           activateAt: err.data.activateAt,
           expiresAt: err.data.expiresAt,
         };
+      } else {
+        error.value = err.data?.message || 'Une erreur est survenue lors de la récupération du lien'
+      }
+
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const fetchPublicLinkDetails = async (identifier: string): Promise<ShortLink | null> => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await useApiFetch<{ success: boolean; data: ShortLink }>('/public/eqt/get-link-details', {
+        params: { identifier }
+      });
+
+      currentLink.value = response.data
+      return response.data
+    } catch (err: any) {
+      console.error('Erreur lors de la récupération du lien public:', err)
+
+      if (err.status === 404) {
+        error.value = 'Lien non trouvé'
       } else {
         error.value = err.data?.message || 'Une erreur est survenue lors de la récupération du lien'
       }
@@ -343,27 +378,39 @@ export const useLinksStore = defineStore('links', () => {
   }
 
   // Récupérer un lien invité avec son token
-
   const fetchGuestLink = async (identifier: string, token: string): Promise<ShortLink | null> => {
     loading.value = true
     error.value = null
 
     try {
+      // Utiliser l'endpoint de liste des liens publics
       const response = await $fetch<{
         success: boolean;
         message: string;
-        data: ShortLink
-      }>(`${config.public.pgsBaseAPI}/eqt/link/guest/${identifier}`, {
-        params: { token }
+        nb: number;
+        data: ShortLink[];
+        currentTime?: string;
+      }>(`${config.public.pgsBaseAPI}/public/eqt/get-link`, {
+        params: { guestAccessToken: token }
       });
 
-      guestLink.value = response.data
-      return response.data
+      // Trouver le lien correspondant à l'identifiant (shortCode ou id)
+      const foundLink = response.data.find(
+        link => link.shortCode === identifier || link.id === identifier
+      )
+
+      if (!foundLink) {
+        error.value = 'Lien non trouvé pour cet identifiant.'
+        return null
+      }
+
+      guestLink.value = foundLink
+      return foundLink
     } catch (err: any) {
       console.error('Erreur lors de la récupération du lien invité:', err)
 
       if (err.status === 401) {
-        error.value = 'Accès refusé : Identifiant ou Jeton invalide.'
+        error.value = 'Accès refusé : Jeton invalide ou expiré.'
       } else {
         error.value = err.data?.message || 'Une erreur est survenue'
       }
@@ -425,6 +472,7 @@ export const useLinksStore = defineStore('links', () => {
     fetchUserLinks,
     fetchPublicLinks,
     fetchLinkById,
+    fetchPublicLinkDetails,
     fetchGuestLink,
     extractMetadata,
     updateLink,

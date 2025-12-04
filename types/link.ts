@@ -19,6 +19,9 @@ export interface ShortLink {
 export interface GuestShortLink extends ShortLink {
   isGuestLink: boolean
   guestAccessToken?: string
+  remainingDays?: number | null
+  isExpired?: boolean
+  status?: 'active' | 'expired' | 'disabled'
 }
 
 export interface LinkStatusError {
@@ -65,10 +68,20 @@ export interface CreateGuestLinkResponse {
   message: string
   link: GuestShortLink
   guestAccessToken: string
+  expiresAt?: string
+  warning?: string
+  note?: string
 }
 
 export interface GetGuestLinkResponse {
   success: boolean
   message: string
   data: GuestShortLink
+  currentTime?: string
+}
+
+export interface TooManyRequestsError {
+  message: string
+  limit: number
+  resetTime: string
 }

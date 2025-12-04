@@ -80,6 +80,20 @@
         </div>
       </div>
 
+      <!-- Date d'expiration -->
+      <div v-if="expiresAt" class="p-6 bg-orange-50 rounded-xl border border-orange-200">
+        <h4 class="text-md font-semibold text-orange-800 mb-2 flex items-center">
+          <IconClock class="w-5 h-5 mr-2" />
+          Expiration automatique
+        </h4>
+        <p class="text-sm text-orange-700 mb-2">
+          Ce lien expirera automatiquement le <strong>{{ formatExpirationDate(expiresAt) }}</strong> (dans 15 jours).
+        </p>
+        <p class="text-xs text-orange-600">
+          Connectez-vous pour créer des liens permanents avec des options avancées.
+        </p>
+      </div>
+
       <!-- Token d'accès -->
       <div class="p-6 bg-warning-50 rounded-xl border border-warning-200">
         <h4 class="text-md font-semibold text-warning-800 mb-2 flex items-center">
@@ -126,7 +140,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useLinksStore } from '~/stores/links'
-import { IconLoader2, IconInfoCircle, IconKey, IconChartBar } from '@tabler/icons-vue'
+import { IconLoader2, IconInfoCircle, IconKey, IconChartBar, IconClock } from '@tabler/icons-vue'
 
 const { getSSOUrl } = useSSO()
 const loginUrl = computed(() => getSSOUrl('login'))
@@ -136,10 +150,23 @@ const linksStore = useLinksStore()
 const longUrl = ref('')
 const shortLink = ref(null)
 const guestToken = ref(null)
+const expiresAt = ref(null)
 const showResult = ref(false)
 const copiedShort = ref(false)
 const copiedToken = ref(false)
 const shortUrlInput = ref(null)
+
+const formatExpirationDate = (dateStr) => {
+  if (!dateStr) return ''
+  return new Date(dateStr).toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 
 const shortenUrl = async () => {
   linksStore.clearError()
@@ -150,6 +177,7 @@ const shortenUrl = async () => {
   if (result) {
     shortLink.value = result.link
     guestToken.value = result.token
+    expiresAt.value = result.expiresAt
     showResult.value = true
   }
 }

@@ -288,7 +288,7 @@ onMounted(async () => {
   }
 
   try {
-    await linksStore.fetchLinkById(shortCode);
+    await linksStore.fetchPublicLinkDetails(shortCode);
 
     // Tags dynamiquement avec les metadata du lien
     if (linksStore.currentLink && linksStore.currentLink.metadata) {

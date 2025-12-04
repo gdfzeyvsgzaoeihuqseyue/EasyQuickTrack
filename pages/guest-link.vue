@@ -7,7 +7,7 @@
           <h1 class="text-3xl font-bold text-gray-900 mb-1">
             Statistiques du lien
           </h1>
-          <p class="text-gray-600">Analyse détaillée de votre lien raccourci</p>
+          <p class="text-gray-600">Informations sur votre lien raccourci</p>
         </div>
 
         <!-- Formulaire d'accès -->
@@ -77,6 +77,75 @@
                 <span class="text-sm text-gray-600">Créé le :</span>
                 <span class="text-gray-900 font-medium">{{ formatDate(linkData.createdAt) }}</span>
               </div>
+
+              <!-- Statut et expiration -->
+              <div v-if="linkData.expiresAt" class="pt-3 mt-3 border-t border-gray-100">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm text-gray-600">Statut :</span>
+                  <span :class="getStatusClass(linkData.status)" class="px-2 py-1 rounded-full text-xs font-medium">
+                    {{ getStatusLabel(linkData.status) }}
+                  </span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-gray-600">Expire le :</span>
+                  <span class="text-gray-900 font-medium">{{ formatDate(linkData.expiresAt) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compte à rebours -->
+          <div v-if="linkData.expiresAt && !linkData.isExpired" class="card p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <IconClock class="w-5 h-5 mr-2 text-orange-600" />
+              Temps restant avant expiration
+            </h3>
+
+            <div class="grid grid-cols-4 gap-3 text-center">
+              <div class="bg-gradient-to-b from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg">
+                <div class="text-3xl md:text-4xl font-bold text-white font-mono">
+                  {{ countdown.days }}
+                </div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Jours</div>
+              </div>
+              <div class="bg-gradient-to-b from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg">
+                <div class="text-3xl md:text-4xl font-bold text-white font-mono">
+                  {{ countdown.hours }}
+                </div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Heures</div>
+              </div>
+              <div class="bg-gradient-to-b from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg">
+                <div class="text-3xl md:text-4xl font-bold text-white font-mono">
+                  {{ countdown.minutes }}
+                </div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Minutes</div>
+              </div>
+              <div
+                class="bg-gradient-to-b from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg relative overflow-hidden">
+                <div class="text-3xl md:text-4xl font-bold text-orange-400 font-mono animate-pulse">
+                  {{ countdown.seconds }}
+                </div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wide">Secondes</div>
+              </div>
+            </div>
+
+            <div v-if="linkData.remainingDays <= 3" class="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+              <p class="text-sm text-orange-700 flex items-center">
+                <IconAlertTriangle class="w-4 h-4 mr-2 flex-shrink-0" />
+                <span>Attention : votre lien expire bientôt ! Connectez-vous pour créer des liens permanents.</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Lien expiré -->
+          <div v-if="linkData.isExpired" class="card p-6 bg-red-50 border-red-200">
+            <div class="flex items-center text-red-700">
+              <IconAlertTriangle class="w-6 h-6 mr-3" />
+              <div>
+                <h3 class="font-semibold">Ce lien a expiré</h3>
+                <p class="text-sm mt-1">Les liens publics expirent automatiquement après 15 jours. Connectez-vous pour
+                  créer des liens permanents.</p>
+              </div>
             </div>
           </div>
 
@@ -87,113 +156,17 @@
               Statistiques
             </h3>
 
-            <!-- Stats -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-              <!-- Clics Totaux -->
-              <div
-                class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition-shadow">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <IconClick class="w-16 h-16 text-primary-600" />
-                </div>
-                <div class="relative z-10">
-                  <p class="text-sm font-medium text-slate-500">Clics Totaux</p>
-                  <p class="mt-2 text-3xl font-bold text-slate-900">{{ linkData.clicks || 0 }}</p>
-                </div>
-                <div class="mt-4 w-full bg-primary-50 h-1.5 rounded-full overflow-hidden">
-                  <div class="bg-primary-500 h-full rounded-full" style="width: 100%"></div>
-                </div>
+            <div
+              class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition-shadow max-w-xs">
+              <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <IconClick class="w-16 h-16 text-primary-600" />
               </div>
-
-              <!-- Visiteurs Uniques -->
-              <div
-                class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition-shadow">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <IconUsers class="w-16 h-16 text-emerald-600" />
-                </div>
-                <div class="relative z-10">
-                  <p class="text-sm font-medium text-slate-500">Visiteurs Uniques</p>
-                  <p class="mt-2 text-3xl font-bold text-slate-900">{{ uniqueVisitors }}</p>
-                </div>
-                <div class="mt-4 w-full bg-emerald-50 h-1.5 rounded-full overflow-hidden">
-                  <div class="bg-emerald-500 h-full rounded-full" :style="`width: ${getUniquePercentage}%`"></div>
-                </div>
+              <div class="relative z-10">
+                <p class="text-sm font-medium text-slate-500">Clics Totaux</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900">{{ linkData.clicks || 0 }}</p>
               </div>
-
-              <!-- Dernière Activité -->
-              <div
-                class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition-shadow">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <IconActivity class="w-16 h-16 text-orange-600" />
-                </div>
-                <div class="relative z-10">
-                  <p class="text-sm font-medium text-slate-500">Dernière Activité</p>
-                  <p class="mt-2 text-lg font-bold text-slate-900 truncate">{{ lastActivityTime }}</p>
-                </div>
-                <div class="mt-5 flex items-center text-xs text-orange-600 font-medium">
-                  <span class="relative flex h-2 w-2 mr-2">
-                    <span
-                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
-                  </span>
-                  Monitoring actif
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Analytics -->
-          <div v-if="linkData.analytics?.length" class="card p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <IconDeviceAnalytics class="w-5 h-5 mr-2 text-purple-600" />
-              Détails des visites
-            </h3>
-
-            <div class="space-y-3 max-h-96 overflow-y-auto">
-              <div v-for="(analytic, index) in linkData.analytics" :key="index"
-                class="p-4 bg-gray-50 rounded-lg border border-gray-200 text-sm">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div>
-                    <span class="text-gray-600">Date :</span>
-                    <div class="font-medium">{{ formatDate(analytic.timestamp) }}</div>
-                  </div>
-                  <div>
-                    <span class="text-gray-600">Pays :</span>
-                    <div class="font-medium">{{ analytic.geolocalisation?.country || 'N/A' }}</div>
-                  </div>
-                  <div>
-                    <span class="text-gray-600">Appareil :</span>
-                    <div class="font-medium">{{ analytic.appareil?.type || 'N/A' }}</div>
-                  </div>
-                  <div>
-                    <span class="text-gray-600">Navigateur :</span>
-                    <div class="font-medium">{{ analytic.appareil?.browser || 'N/A' }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Métadonnées -->
-          <div v-if="linkData.metadata" class="card p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <IconInfoCircle class="w-5 h-5 mr-2 text-blue-600" />
-              Métadonnées
-            </h3>
-
-            <div class="space-y-3">
-              <div v-if="linkData.metadata.title">
-                <span class="text-sm text-gray-600">Titre :</span>
-                <p class="font-medium">{{ linkData.metadata.title }}</p>
-              </div>
-
-              <div v-if="linkData.metadata.description">
-                <span class="text-sm text-gray-600">Description :</span>
-                <p class="text-sm text-gray-700">{{ linkData.metadata.description }}</p>
-              </div>
-
-              <div v-if="linkData.metadata.image" class="mt-3">
-                <span class="text-sm text-gray-600 block mb-1">Aperçu :</span>
-                <img :src="linkData.metadata.image" class="max-w-sm rounded-lg border" />
+              <div class="mt-4 w-full bg-primary-50 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-primary-500 h-full rounded-full" style="width: 100%"></div>
               </div>
             </div>
           </div>
@@ -201,7 +174,7 @@
           <!-- Message -->
           <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
             <IconInfoCircle class="w-4 h-4 inline mr-1" />
-            Conservez précieusement votre jeton d'accès.
+            Conservez précieusement votre jeton d'accès pour consulter les statistiques de ce lien.
           </div>
         </div>
 
@@ -217,10 +190,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useLinksStore } from '~/stores/links'
-import { IconLink, IconChartBar, IconDeviceAnalytics, IconInfoCircle, IconLoader2, IconCopy, IconCheck } from '@tabler/icons-vue'
+import { IconLink, IconChartBar, IconClick, IconClock, IconAlertTriangle, IconInfoCircle, IconLoader2, IconCopy, IconCheck } from '@tabler/icons-vue'
 import AppNotification from '~/components/app/AppNotification.vue'
 import { LogoLoader } from '@/components/utils';
 
@@ -232,6 +205,14 @@ const linkIdentifier = ref('')
 const accessToken = ref('')
 const linkData = ref(null)
 const copied = ref(false)
+let countdownInterval = null
+
+const countdown = reactive({
+  days: '00',
+  hours: '00',
+  minutes: '00',
+  seconds: '00'
+})
 
 const notif = ref({
   isVisible: false,
@@ -246,24 +227,6 @@ const showNotif = (msg, type = 'success') => {
 
 const hasValidParams = computed(() => route.query.id && route.query.token)
 
-const uniqueVisitors = computed(() => {
-  if (!linkData.value?.analytics) return 0
-  const uniqueIps = new Set(linkData.value.analytics.map(a => a.geolocalisation?.ip).filter(Boolean))
-  return uniqueIps.size
-})
-
-const getUniquePercentage = computed(() => {
-  if (!linkData.value) return 0
-  const totalClicks = linkData.value.clicks || 1
-  return Math.min(Math.round((uniqueVisitors.value / totalClicks) * 100), 100)
-})
-
-const lastActivityTime = computed(() => {
-  if (!linkData.value?.analytics || linkData.value.analytics.length === 0) return 'Aucune'
-  const last = linkData.value.analytics[linkData.value.analytics.length - 1].timestamp
-  return new Date(last).toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short', year: 'numeric' })
-})
-
 const formatDate = ts => new Date(ts).toLocaleString('fr-FR', {
   year: 'numeric',
   month: 'long',
@@ -271,6 +234,73 @@ const formatDate = ts => new Date(ts).toLocaleString('fr-FR', {
   hour: '2-digit',
   minute: '2-digit'
 })
+
+const padZero = (num) => String(num).padStart(2, '0')
+
+const updateCountdown = () => {
+  if (!linkData.value?.expiresAt) return
+
+  const now = new Date().getTime()
+  const expiresAt = new Date(linkData.value.expiresAt).getTime()
+  const diff = expiresAt - now
+
+  if (diff <= 0) {
+    countdown.days = '00'
+    countdown.hours = '00'
+    countdown.minutes = '00'
+    countdown.seconds = '00'
+    linkData.value.isExpired = true
+    if (countdownInterval) {
+      clearInterval(countdownInterval)
+      countdownInterval = null
+    }
+    return
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+
+  countdown.days = padZero(days)
+  countdown.hours = padZero(hours)
+  countdown.minutes = padZero(minutes)
+  countdown.seconds = padZero(seconds)
+}
+
+const startCountdown = () => {
+  if (countdownInterval) {
+    clearInterval(countdownInterval)
+  }
+  updateCountdown()
+  countdownInterval = setInterval(updateCountdown, 1000)
+}
+
+const getStatusClass = (status) => {
+  switch (status) {
+    case 'active':
+      return 'bg-green-100 text-green-800'
+    case 'expired':
+      return 'bg-red-100 text-red-800'
+    case 'disabled':
+      return 'bg-gray-100 text-gray-800'
+    default:
+      return 'bg-gray-100 text-gray-600'
+  }
+}
+
+const getStatusLabel = (status) => {
+  switch (status) {
+    case 'active':
+      return 'Actif'
+    case 'expired':
+      return 'Expiré'
+    case 'disabled':
+      return 'Désactivé'
+    default:
+      return 'Inconnu'
+  }
+}
 
 const fetchLinkData = async () => {
   const id = linkIdentifier.value || route.query.id
@@ -283,6 +313,11 @@ const fetchLinkData = async () => {
 
     if (!hasValidParams.value) {
       router.push({ query: { id, token } })
+    }
+
+    // Démarrer le compte à rebours si le lien n'est pas expiré
+    if (result.expiresAt && !result.isExpired) {
+      startCountdown()
     }
   }
 }
@@ -298,11 +333,24 @@ const copyShortLink = async () => {
   }
 }
 
+// Watcher pour démarrer le compte à rebours quand les données sont chargées
+watch(linkData, (newData) => {
+  if (newData?.expiresAt && !newData.isExpired) {
+    startCountdown()
+  }
+})
+
 onMounted(() => {
   if (hasValidParams.value) {
     linkIdentifier.value = route.query.id
     accessToken.value = route.query.token
     fetchLinkData()
+  }
+})
+
+onUnmounted(() => {
+  if (countdownInterval) {
+    clearInterval(countdownInterval)
   }
 })
 
@@ -316,17 +364,5 @@ useSeoMeta({
 <style scoped>
 .card {
   @apply bg-white rounded-xl shadow-sm border border-gray-200;
-}
-
-.stat-box {
-  @apply p-4 rounded-lg text-center;
-}
-
-.stat-box .value {
-  @apply text-2xl font-bold;
-}
-
-.stat-box .label {
-  @apply text-sm;
 }
 </style>
