@@ -1,12 +1,7 @@
 <template>
   <div>
-    <NotificationItem
-      v-for="notification in filteredNotifications"
-      :key="notification.id"
-      :notification="notification"
-      @dismiss="handleDismiss"
-      @track-event="handleNotificationTrack"
-    />
+    <NotificationItem v-for="notification in filteredNotifications" :key="notification.id" :notification="notification"
+      @dismiss="handleDismiss" @track-event="handleNotificationTrack" />
   </div>
 </template>
 
@@ -71,6 +66,6 @@ watch(filteredNotifications, (newNotifications, oldNotifications) => {
       siteInfoStore.trackEvent(notification.id, 'views');
     }
   });
-}, { deep: true }); 
+}, { deep: true });
 
 </script>
