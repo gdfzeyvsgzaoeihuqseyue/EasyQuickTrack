@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { onMounted, computed, ref, watch } from 'vue';
-import { useSiteInfoStore } from '@/stores/siteInfo';
+import { useSiteInfoStore } from '~/stores/siteinfo';
 import { NotificationItem } from '@/components/utils';
 import type { SiteInfo } from '@/types';
 
