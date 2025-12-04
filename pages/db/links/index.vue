@@ -975,7 +975,8 @@ useSeoMeta({
     <AppNotification :isVisible="showNotification" :message="notificationMessage" :type="notificationType"
       @close="closeNotification" />
 
-    <EditLinkModal :visible="showEditModal" :link="linkToEdit" :loading="linksStore.loading" :error="linksStore.error"
+    <EditLinkModal :visible="showEditModal" :link="linkToEdit" :loading="linksStore.loading"
+      :error="typeof linksStore.error === 'string' ? linksStore.error : (linksStore.error as any)?.message"
       @submit="handleUpdateLink" @cancel="cancelEdit" />
 
     <DeleteLinkModal :visible="showDeleteModal" :link="linkToDelete" :loading="linksStore.loading" @confirm="deleteLink"
@@ -1048,7 +1049,7 @@ const closeNotification = () => {
 // Erreurs du store
 watch(() => linksStore.error, (newError) => {
   if (newError) {
-    showFloatingNotification(newError, 'error');
+    showFloatingNotification(typeof newError === 'string' ? newError : (newError as any)?.message || 'Une erreur est survenue', 'error');
   }
 });
 
@@ -1199,7 +1200,7 @@ const handleUpdateLink = async (newUrl: string, activateAt?: string, expiresAt?:
     linkToEdit.value = null;
     showFloatingNotification('Lien mis à jour avec succès !', 'success');
   } else {
-    showFloatingNotification(linksStore.error || 'Erreur lors de la mise à jour.', 'error');
+    showFloatingNotification((typeof linksStore.error === 'string' ? linksStore.error : (linksStore.error as any)?.message) || 'Erreur lors de la mise à jour.', 'error');
   }
 };
 
@@ -1228,7 +1229,7 @@ const deleteLink = async () => {
     linkToDelete.value = null;
     showFloatingNotification('Lien supprimé avec succès !', 'success');
   } else {
-    showFloatingNotification(linksStore.error || 'Erreur lors de la suppression.', 'error');
+    showFloatingNotification((typeof linksStore.error === 'string' ? linksStore.error : (linksStore.error as any)?.message) || 'Erreur lors de la suppression.', 'error');
   }
 };
 
