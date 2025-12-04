@@ -281,6 +281,20 @@ const cancelRedirection = () => {
   redirectionCancelled.value = true;
 };
 
+// Fonction pour démarrer le compte à rebours
+const startCountdown = () => {
+  if (countdownInterval) clearInterval(countdownInterval);
+
+  countdownInterval = setInterval(() => {
+    if (countdownSeconds.value > 0) {
+      countdownSeconds.value--;
+    } else {
+      if (countdownInterval) clearInterval(countdownInterval);
+      performRedirect();
+    }
+  }, 1000);
+};
+
 onMounted(async () => {
   if (!shortCode) {
     linksStore.error = 'Code court manquant.';
@@ -320,6 +334,11 @@ onMounted(async () => {
         twitterImage: metadata.image || undefined,
         robots: 'noindex, follow'
       });
+    }
+
+    // Démarrer le compte à rebours si le lien est actif
+    if (linksStore.currentLink && linkStatus.value.isActive) {
+      startCountdown();
     }
 
   } catch (err: any) {
