@@ -21,8 +21,6 @@ export const useLinksStore = defineStore('links', () => {
     linksOnPage: 0
   })
 
-  // Actions
-
   // Créer un lien en tant qu'utilisateur authentifié
   const createUserLink = async (longUrl: string, alias?: string, activateAt?: string, expiresAt?: string): Promise<ShortLink | null> => {
     loading.value = true
@@ -53,7 +51,7 @@ export const useLinksStore = defineStore('links', () => {
     }
   }
 
-  // Créer un lien public (invité)
+  // Créer un lien public
   const createPublicLink = async (longUrl: string): Promise<{ link: ShortLink; token: string; expiresAt?: string } | null> => {
     loading.value = true
     error.value = null
@@ -163,7 +161,7 @@ export const useLinksStore = defineStore('links', () => {
     error.value = null
 
     try {
-      const response = await useApiFetch<GetLinkResponse>(`user/eqt/get-link/${identifier}`);
+      const response = await useApiFetch<GetLinkResponse>(`/user/eqt/get-link/${identifier}`);
 
       currentLink.value = response.data
       return response.data
@@ -244,7 +242,7 @@ export const useLinksStore = defineStore('links', () => {
     error.value = null
 
     try {
-      const response = await useApiFetch<UpdateLinkResponse>(`/eqt/link/${id}`, {
+      const response = await useApiFetch<UpdateLinkResponse>(`/user/eqt/update-link/${id}`, {
         method: 'PUT',
         body: { longUrl, activateAt, expiresAt }
       });
@@ -289,7 +287,7 @@ export const useLinksStore = defineStore('links', () => {
     error.value = null
 
     try {
-      await useApiFetch<DeleteLinkResponse>(`/eqt/link/${id}`, {
+      await useApiFetch<DeleteLinkResponse>(`/user/eqt/delete-link/${id}`, {
         method: 'DELETE'
       });
 
@@ -343,7 +341,7 @@ export const useLinksStore = defineStore('links', () => {
     error.value = null
 
     try {
-      const response = await useApiFetch<{ success: boolean; message: string; data: ShortLink }>(`/eqt/link/${id}/toggle`, {
+      const response = await useApiFetch<{ success: boolean; message: string; data: ShortLink }>(`/user/eqt/toggle-link/${id}`, {
         method: 'PUT',
         body: { disable }
       });

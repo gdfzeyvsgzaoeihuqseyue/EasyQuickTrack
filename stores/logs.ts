@@ -15,7 +15,7 @@ export const useLogsStore = defineStore('logs', () => {
     error.value = ''
 
     try {
-      const response = await useApiFetch<GetLogsResponse>(`/eqt/link/${linkId}/logs`);
+      const response = await useApiFetch<GetLogsResponse>(`/user/eqt/log-link/${linkId}`);
 
       logs.value = response.data
       linkDetails.value = response.linkDetails
