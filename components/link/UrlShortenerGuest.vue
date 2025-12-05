@@ -39,7 +39,7 @@
 
                 <span class="text-gray-300">|</span>
 
-                <NuxtLink to="/guest-link"
+                <NuxtLink to="/guest/link"
                   class="font-semibold text-gray-500 hover:text-gray-700 transition-colors underline flex items-center">
                   Statistiques publiques
                 </NuxtLink>
@@ -116,7 +116,7 @@
 
       <!-- Lien vers la page de consultation -->
       <div class="text-center">
-        <NuxtLink :to="`/guest-link?id=${shortLink?.shortCode}&token=${guestToken}`"
+        <NuxtLink :to="`/guest/link?id=${shortLink?.shortCode}&token=${guestToken}`"
           class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium">
           <IconChartBar class="w-5 h-5 mr-2" />
           Voir les statistiques maintenant
@@ -138,7 +138,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useLinksStore } from '~/stores/links'
 import { IconLoader2, IconInfoCircle, IconKey, IconChartBar, IconClock } from '@tabler/icons-vue'
 
@@ -155,6 +155,10 @@ const showResult = ref(false)
 const copiedShort = ref(false)
 const copiedToken = ref(false)
 const shortUrlInput = ref(null)
+
+onMounted(() => {
+  linksStore.clearError()
+})
 
 const formatExpirationDate = (dateStr) => {
   if (!dateStr) return ''

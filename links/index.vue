@@ -68,17 +68,17 @@
       </div>
     </div>
 
-    <div class="card p-4 sm:p-6">
+    <div class="card p-6">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-          <div class="relative w-full sm:w-auto">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <div class="relative">
             <IconSearch class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input v-model="searchQuery" type="text" placeholder="Rechercher un lien..."
               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent w-full sm:w-64" />
           </div>
 
           <select v-model="statusFilter"
-            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent w-full sm:w-auto">
+            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
             <option value="all">Tous les liens</option>
             <option value="active">Liens actifs</option>
             <option value="inactive">Liens inactifs</option>
@@ -86,7 +86,7 @@
           </select>
 
           <select v-model="sortBy"
-            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent w-full sm:w-auto">
+            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
             <option value="createdAt">Plus récents</option>
             <option value="clicks">Plus de clics</option>
             <option value="updatedAt">Dernière modification</option>

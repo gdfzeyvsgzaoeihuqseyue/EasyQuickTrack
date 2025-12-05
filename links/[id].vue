@@ -30,8 +30,8 @@
         <LinkInfoCard :link="linksStore.currentLink" :status-loading="statusLoading" :copied="copied"
           :total-logs="logsStore.totalLogs" @toggle-status="toggleLinkStatus"
           @show-analytics="showAnalyticsModal = true" @copy-link="copyToClipboard" @generate-qr-code="generateQRCode"
-          @edit-link="editLink" @confirm-delete="confirmDeleteLink" />
-
+          @edit-link="editLink" />
+          
         <LinkMetadataCard :link-metadata="linksStore.currentLink?.metadata" :loading="linksStore.metadataLoading"
           :error="linksStore.metadataError" @refresh="refreshMetadata" />
         <LinkHistoryCard :logs="logsStore.logs" :loading="logsStore.loading" :error="logsStore.error"
@@ -360,13 +360,6 @@ const deleteLink = async () => {
     await router.push('/db/links');
   } else {
     showFloatingNotification((typeof linksStore.error === 'string' ? linksStore.error : (linksStore.error as any)?.message) || 'Erreur lors de la suppression.', 'error');
-  }
-};
-
-const confirmDeleteLink = () => {
-  if (linksStore.currentLink) {
-    linkToDelete.value = linksStore.currentLink;
-    showDeleteModal.value = true;
   }
 };
 

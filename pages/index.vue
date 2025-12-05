@@ -55,7 +55,10 @@
           <UrlShortener v-if="authStore.isLoggedIn" />
           <UrlShortenerGuest v-else />
         </template>
-        <QRCodeGenerator v-else-if="componentMode === 'qrcode'" />
+        <template v-else-if="componentMode === 'qrcode'">
+          <QRCodeGenerator v-if="authStore.isLoggedIn" />
+          <QRCodeGeneratorGuest v-else />
+        </template>
       </div>
     </section>
 
@@ -150,7 +153,7 @@ import { useLinksStore } from '~/stores/links';
 import { useAnalyticsStore } from '~/stores/analytics';
 import { IconLink, IconDeviceAnalytics, IconLock } from '@tabler/icons-vue';
 import { UrlShortener, UrlShortenerGuest } from '@/components/link'
-import { QRCodeGenerator } from '@/components/qrcode'
+import { QRCodeGenerator, QRCodeGeneratorGuest } from '@/components/qrcode'
 import { useSharedFiles } from '~/stores/sharedFiles';
 import { useAuthStore } from '~/stores/auth';
 import { useRouter } from 'vue-router';

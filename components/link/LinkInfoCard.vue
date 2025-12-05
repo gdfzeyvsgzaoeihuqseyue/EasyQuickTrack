@@ -67,15 +67,10 @@
             <IconEdit class="w-4 h-4" />
             <span class="ml-2 hidden sm:inline">Modifier</span>
           </button>
-          <button disabled
-            class="bg-red-300 text-white p-3 rounded-xl font-medium transition-colors flex items-center sm:px-4 sm:py-2 cursor-not-allowed">
+          <button @click="$emit('confirmDelete')"
+            class="bg-red-600 hover:bg-red-700 text-white p-3 rounded-xl font-medium transition-colors flex items-center sm:px-4 sm:py-2">
             <IconTrashFilled class="w-4 h-4" />
             <span class="ml-2 hidden sm:inline">Supprimer</span>
-          </button>
-          <button @click="$emit('showDeleteInfo')"
-            class="bg-gray-600 hover:bg-gray-700 text-white p-3 rounded-xl font-medium transition-colors flex items-center sm:px-4 sm:py-2">
-            <IconInfoCircle class="w-4 h-4" />
-            <span class="ml-2 hidden sm:inline">Info suppr.</span>
           </button>
         </div>
       </div>
@@ -118,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { IconEdit, IconLoader, IconQrcode, IconTrashFilled, IconInfoCircle } from '@tabler/icons-vue';
+import { IconEdit, IconLoader, IconQrcode, IconTrashFilled } from '@tabler/icons-vue';
 
 // Définir les props
 defineProps({
@@ -147,8 +142,7 @@ const emit = defineEmits([
   'copyLink',
   'generateQrCode',
   'editLink',
-  'confirmDelete', 
-  'showDeleteInfo'
+  'confirmDelete'
 ]);
 
 // Fonctions d'aide

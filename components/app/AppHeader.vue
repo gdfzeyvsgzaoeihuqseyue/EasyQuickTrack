@@ -162,7 +162,8 @@ const computedNavItems = computed(() => {
       { label: 'Tarifs', to: '/pricing' },
       { label: 'À propos', to: '/about' },
       { label: 'Contact', to: '/contact' },
-      { label: 'Lien public', to: '/guest-link' },
+      { label: 'Lien public', to: '/guest/link' },
+      { label: 'QR Code public', to: '/guest/qrcode' },
       { label: authStore.user ? `Salut, ${authStore.user.firstName}` : 'Mon profil', to: '#', isDropdown: true }
     ];
   } else {
@@ -170,7 +171,8 @@ const computedNavItems = computed(() => {
       { label: 'Tarifs', to: '/pricing' },
       { label: 'À propos', to: '/about' },
       { label: 'Contact', to: '/contact' },
-      { label: 'Lien public', to: '/guest-link' },
+      { label: 'Lien public', to: '/guest/link' },
+      { label: 'QR Code public', to: '/guest/qrcode' },
       { label: 'Se connecter', to: getSSOUrl('login'), isButton: true }
     ];
   }

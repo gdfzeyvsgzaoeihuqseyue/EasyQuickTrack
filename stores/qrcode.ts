@@ -28,7 +28,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
     error.value = ''
 
     try {
-      const response = await useApiFetch<GetQRCodesResponse>('/eqt/qrcodes', {
+      const response = await useApiFetch<GetQRCodesResponse>('/user/eqt/get-qrcodes', {
         params: { page, limit }
       })
 
@@ -54,7 +54,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
     try {
       if (download) {
         // Pour télécharger le fichier binaire
-        const response = await fetch(`${baseUrl}/eqt/qrcode/${id}?download=true`)
+        const response = await fetch(`${baseUrl}/user/eqt/get-qrcode/${id}?download=true`)
         if (!response.ok) {
           throw new Error('Erreur lors du téléchargement')
         }
@@ -193,7 +193,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
       if (options.signatureColor) params.append('signatureColor', options.signatureColor)
       if (options.signatureFontSize) params.append('signatureFontSize', options.signatureFontSize.toString())
 
-      const url = `${baseUrl}/eqt/${linkId}/qrcode?${params.toString()}`
+      const url = `${baseUrl}/user/eqt/create-sht-qrcode/${linkId}?${params.toString()}`
 
       // Créer FormData si un logo est fourni
       let requestOptions: RequestInit = {
@@ -257,7 +257,7 @@ export const useQRCodeStore = defineStore('qrcode', () => {
     error.value = ''
 
     try {
-      const endpoint = `${baseUrl}/eqt/qrcode`
+      const endpoint = `${baseUrl}/user/eqt/create-url-qrcode`
 
       // Préparer les données
       const formData = new FormData()
@@ -340,6 +340,190 @@ export const useQRCodeStore = defineStore('qrcode', () => {
     currentQRCode.value = null
   }
 
+  // ============================================
+  // MÉTHODES PUBLIQUES (pour utilisateurs non authentifiés)
+  // ============================================
+
+  const generatePublicQRCodeFromUrl = async (url: string, options: Partial<QRCodeOptions> = {}): Promise<any | null> => {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const endpoint = `${baseUrl}/public/eqt/create-url-qrcode`
+
+      const params = new URLSearchParams()
+      params.append('url', url)
+      params.append('download', 'true')
+
+      // Ajouter les options limitées pour les invités
+      if (options.format) params.append('format', options.format)
+      if (options.size) params.append('size', Math.min(options.size, 500).toString())
+      if (options.foregroundColor) params.append('foregroundColor', options.foregroundColor)
+      if (options.backgroundColor) params.append('backgroundColor', options.backgroundColor)
+      if (options.errorCorrectionLevel) params.append('errorCorrectionLevel', options.errorCorrectionLevel)
+      if (options.margin !== undefined) params.append('margin', Math.min(options.margin, 5).toString())
+
+      const response = await fetch(`${endpoint}?${params.toString()}`, {
+        method: 'GET'
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Erreur inconnue' }))
+
+        if (response.status === 429) {
+          throw new Error('Limite atteinte: maximum 2 QR codes par jour. Connectez-vous pour en créer plus.')
+        }
+
+        throw new Error(errorData.message || `Erreur HTTP: ${response.status}`)
+      }
+
+      const blob = await response.blob()
+      generatedQRCode.value = blob
+
+      // Créer une URL pour l'affichage
+      if (qrCodeUrl.value) {
+        URL.revokeObjectURL(qrCodeUrl.value)
+      }
+      qrCodeUrl.value = URL.createObjectURL(blob)
+
+      return {
+        success: true,
+        message: 'QR Code généré avec succès',
+        blob,
+        url: qrCodeUrl.value
+      }
+
+    } catch (err: any) {
+      console.error('Erreur lors de la génération du QR code public:', err)
+      error.value = err.message || 'Une erreur est survenue lors de la génération du QR code'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const generatePublicQRCodeFromLink = async (identifier: string, guestAccessToken: string, options: Partial<QRCodeOptions> = {}): Promise<any | null> => {
+    loading.value = true
+    error.value = ''
+
+    try {
+      // Validation des paramètres requis
+      if (!identifier || identifier.trim() === '') {
+        throw new Error('L\'identifiant du lien est requis')
+      }
+
+      if (!guestAccessToken || guestAccessToken.trim() === '') {
+        throw new Error('Le jeton d\'accès invité est requis')
+      }
+
+      const params = new URLSearchParams()
+      params.append('guestAccessToken', guestAccessToken)
+      params.append('download', 'true')
+
+      // Ajouter les options limitées pour les invités
+      if (options.format) params.append('format', options.format)
+      if (options.size) params.append('size', Math.min(options.size, 500).toString())
+      if (options.errorCorrectionLevel) params.append('errorCorrectionLevel', options.errorCorrectionLevel)
+      if (options.margin !== undefined) params.append('margin', Math.min(options.margin, 20).toString())
+
+      const endpoint = `${baseUrl}/public/eqt/qrCode/create-sht-qrcode/${identifier}?${params.toString()}`
+
+      console.log('🔍 DEBUG - generatePublicQRCodeFromLink:', {
+        identifier,
+        guestAccessToken: guestAccessToken.substring(0, 10) + '...',
+        endpoint,
+        params: params.toString()
+      })
+
+      const response = await fetch(endpoint, {
+        method: 'GET'
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Erreur inconnue' }))
+
+        if (response.status === 401) {
+          throw new Error('Jeton invalide ou lien non trouvé')
+        }
+
+        if (response.status === 400) {
+          throw new Error(errorData.message || 'Le lien a expiré')
+        }
+
+        throw new Error(errorData.message || `Erreur HTTP: ${response.status}`)
+      }
+
+      const blob = await response.blob()
+      generatedQRCode.value = blob
+
+      // Créer une URL pour l'affichage
+      if (qrCodeUrl.value) {
+        URL.revokeObjectURL(qrCodeUrl.value)
+      }
+      qrCodeUrl.value = URL.createObjectURL(blob)
+
+      return {
+        success: true,
+        message: 'QR Code généré avec succès',
+        blob,
+        url: qrCodeUrl.value
+      }
+
+    } catch (err: any) {
+      console.error('Erreur lors de la génération du QR code public:', err)
+      error.value = err.message || 'Une erreur est survenue lors de la génération du QR code'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const fetchGuestQRCode = async (id: string, guestAccessToken: string): Promise<any | null> => {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const params = new URLSearchParams()
+      params.append('guestAccessToken', guestAccessToken)
+      params.append('download', 'false')
+
+      const endpoint = `${baseUrl}/public/eqt/get-qrcode/${id}?${params.toString()}`
+
+      const response = await fetch(endpoint, {
+        method: 'GET'
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Erreur inconnue' }))
+
+        if (response.status === 401) {
+          throw new Error('Jeton invalide ou accès non autorisé')
+        }
+
+        if (response.status === 404) {
+          throw new Error('QR code non trouvé')
+        }
+
+        throw new Error(errorData.message || `Erreur HTTP: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      if (data.qrCode) {
+        return data.qrCode
+      }
+
+      return data
+
+    } catch (err: any) {
+      console.error('Erreur lors de la récupération du QR code invité:', err)
+      error.value = err.message || 'Une erreur est survenue lors de la récupération du QR code'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
   // Getters
   const hasQRCode = computed(() => !!generatedQRCode.value)
   const isGenerating = computed(() => loading.value)
@@ -366,6 +550,11 @@ export const useQRCodeStore = defineStore('qrcode', () => {
     clearQRCode,
     clearError,
     clearCurrentQRCode,
+
+    // Actions publiques (non authentifiées)
+    generatePublicQRCodeFromUrl,
+    generatePublicQRCodeFromLink,
+    fetchGuestQRCode,
 
     // Getters
     hasQRCode,
